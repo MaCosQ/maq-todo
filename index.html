@@ -368,10 +368,10 @@
     <div class="modal-field">
       <label class="modal-label">Action</label>
       <div class="picto-row">
-        <button class="picto-current" id="mPictoBtn" onclick="togglePictoSelector()" title="Changer le picto">📋</button>
+        <button class="picto-current" id="mPictoBtn" onclick="event.stopPropagation();togglePictoSelector()" title="Changer le picto">📋</button>
         <input class="modal-inp" id="mAction" placeholder="Mail, Appel, Valider…" oninput="autoPickPicto(this.value)" style="flex:1;" />
       </div>
-      <div class="picto-selector" id="pictoSelector">
+      <div class="picto-selector" id="pictoSelector" onclick="event.stopPropagation()">
         <span class="picto-label" style="width:100%;">Choisir un picto :</span>
         <button class="picto-opt" onclick="selectPicto('✉️')">✉️</button>
         <button class="picto-opt" onclick="selectPicto('💬')">💬</button>
@@ -762,6 +762,33 @@ function addTask() {
   saveToSheet(); render();
 }
 
+// SÉLECTEUR PICTO MODALE ÉDITION
+function togglePictoSelector() {
+  const sel = document.getElementById('pictoSelector');
+  sel.classList.toggle('show');
+}
+
+function selectPicto(p) {
+  manualPicto = p;
+  document.getElementById('mPictoBtn').textContent = p;
+  document.querySelectorAll('#pictoSelector .picto-opt').forEach(b => {
+    b.classList.toggle('selected', b.textContent.trim() === p);
+  });
+  document.getElementById('pictoSelector').classList.remove('show');
+}
+
+function autoPickPicto(val) {
+  // Si picto choisi manuellement, ne pas écraser
+  if (manualPicto) return;
+  const detected = getPicto(val);
+  document.getElementById('mPictoBtn').textContent = detected;
+  if (detected === '📋' && val.trim().length > 2) {
+    document.getElementById('pictoSelector').classList.add('show');
+  } else {
+    document.getElementById('pictoSelector').classList.remove('show');
+  }
+}
+
 // MODAL
 function openModal(id) {
   const t=tasks.find(t=>t.id===id);
@@ -770,10 +797,10 @@ function openModal(id) {
   document.getElementById('mAction').value=t.action||'';
   document.getElementById('mSubject').value=t.subject||'';
   document.getElementById('mCol').value=t.col;
-  manualPicto = t.picto || null;
+  manualPicto = null; // Pas de verrouillage à l'ouverture — auto-détection active
   document.getElementById('mPictoBtn').textContent = t.picto || getPicto(t.action);
   document.getElementById('pictoSelector').classList.remove('show');
-  document.querySelectorAll('.picto-opt').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('#pictoSelector .picto-opt').forEach(b => b.classList.remove('selected'));
   document.getElementById('mRecur').checked = !!(t.recur);
   document.getElementById('mRecurFreq').value = t.recurFreq||'weekly';
   document.getElementById('mRecurFreq').style.display = t.recur ? 'inline-block':'none';
