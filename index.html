@@ -26,8 +26,9 @@
   #app { display: none; }
   .app-wrap { max-width: 1400px; margin: 0 auto; background: white; border-radius: 14px; overflow: hidden; border: 1px solid #e0ddd8; }
 
-  .toolbar { display: flex; align-items: center; gap: 10px; padding: 11px 16px; background: #f8f7f4; border-bottom: 1px solid #e0ddd8; }
+  .toolbar { display: flex; align-items: center; gap: 10px; padding: 11px 16px; background: #f8f7f4; border-bottom: 1px solid #e0ddd8; flex-wrap: wrap; }
   .tool-title { font-size: 14px; font-weight: 600; color: #1a1a1a; flex: 1; }
+  .task-count { font-size: 11px; color: #888; }
   .status { font-size: 10px; padding: 3px 10px; border-radius: 99px; font-weight: 500; }
   .s-ok { background: #eaf3de; color: #3b6d11; }
   .s-err { background: #fcebeb; color: #a32d2d; }
@@ -39,6 +40,7 @@
   .btn-mic:hover { background: #a32d2d; border-color: #a32d2d; }
   .btn-mic.on { background: #a32d2d; animation: blink 1s infinite; }
   .btn-logout { background: transparent; border-color: #d0cdc8; color: #999; font-size: 11px; padding: 5px 10px; }
+  .shortcut-hint { font-size: 10px; color: #bbb; padding: 0 4px; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.65} }
 
   .listen-bar { display: none; align-items: center; gap: 8px; padding: 6px 16px; background: #fcebeb; border-bottom: 1px solid #f09595; font-size: 11px; color: #a32d2d; }
@@ -70,37 +72,43 @@
   .col-count { font-size: 10px; color: #666; background: rgba(255,255,255,0.7); border-radius: 99px; padding: 1px 7px; }
 
   /* CARDS */
-  .card { background: white; border-radius: 9px; padding: 8px 10px; border: 1px solid rgba(0,0,0,0.08); cursor: grab; display: flex; align-items: center; gap: 8px; transition: transform .15s, box-shadow .15s; user-select: none; }
+  .card { background: white; border-radius: 9px; padding: 8px 10px; border: 1px solid rgba(0,0,0,0.08); cursor: grab; display: flex; align-items: center; gap: 8px; transition: transform .15s, box-shadow .15s, opacity .15s; user-select: none; position: relative; }
   .card:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.07); }
-  .card.dragging { opacity: .4; cursor: grabbing; }
-  .card.done-card { background: #f8f8f6; border-color: rgba(0,0,0,0.05); opacity: .75; cursor: default; }
+  .card.dragging { opacity: .35; cursor: grabbing; box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+  .card.drag-over-top { border-top: 2px solid #1a1a1a; }
+  .card.drag-over-bottom { border-bottom: 2px solid #1a1a1a; }
+  .card.done-card { background: #f8f8f6; border-color: rgba(0,0,0,0.05); opacity: .7; cursor: default; }
   .card.done-card:hover { transform: none; box-shadow: none; }
 
-  .card-check { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #ccc; background: white; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+  .card-check { width: 17px; height: 17px; border-radius: 50%; border: 1.5px solid #ccc; background: white; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .15s; }
   .card-check:hover { border-color: #3b6d11; background: #eaf3de; }
   .card-check.checked { border-color: #3b6d11; background: #3b6d11; }
   .card-check.checked::after { content: '✓'; color: white; font-size: 9px; font-weight: 700; }
 
+  .card-drag-handle { cursor: grab; color: #ccc; font-size: 13px; flex-shrink: 0; padding: 0 1px; line-height: 1; display: none; }
+  .card:hover .card-drag-handle { display: block; }
+  .card.done-card .card-drag-handle { display: none; }
+
   .picto { font-size: 19px; line-height: 1; flex-shrink: 0; }
-  .card.done-card .picto { filter: grayscale(1); opacity: .5; }
+  .card.done-card .picto { filter: grayscale(1); opacity: .4; }
 
   .card-text { flex: 1; min-width: 0; }
   .card-subject { font-size: 12px; font-weight: 600; color: #1a1a1a; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .card.done-card .card-subject { text-decoration: line-through; color: #aaa; font-weight: 400; }
   .card-action-lbl { font-size: 11px; color: #777; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  .card-btns { display: none; gap: 4px; flex-shrink: 0; }
+  .card-btns { display: none; gap: 3px; flex-shrink: 0; }
   .card:hover .card-btns { display: flex; }
-  .card-btn { font-size: 12px; cursor: pointer; color: #aaa; background: none; border: none; padding: 1px 3px; transition: color .15s; line-height: 1; }
-  .card-btn:hover { color: #555; }
-  .card-btn.del:hover { color: #e24b4a; }
+  .card-btn { font-size: 12px; cursor: pointer; color: #bbb; background: none; border: none; padding: 2px 4px; transition: color .15s; line-height: 1; border-radius: 4px; }
+  .card-btn:hover { color: #555; background: #f0ede8; }
+  .card-btn.del:hover { color: #e24b4a; background: #fcebeb; }
 
   /* ZONE RÉALISÉ */
   .done-zone { margin-top: auto; }
-  .done-toggle { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #888; cursor: pointer; padding: 4px 2px; border-top: 1px dashed rgba(0,0,0,0.12); margin-top: 6px; user-select: none; }
+  .done-toggle { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #888; cursor: pointer; padding: 5px 2px; border-top: 1px dashed rgba(0,0,0,0.12); margin-top: 6px; user-select: none; }
   .done-toggle:hover { color: #555; }
-  .done-toggle .arrow { font-size: 8px; transition: transform .2s; }
-  .done-toggle.open .arrow { transform: rotate(90deg); }
+  .done-arrow { font-size: 8px; transition: transform .2s; }
+  .done-toggle.open .done-arrow { transform: rotate(90deg); }
   .done-list { display: none; flex-direction: column; gap: 5px; margin-top: 5px; }
   .done-list.open { display: flex; }
 
@@ -110,19 +118,34 @@
   .drop-hint.over { border-color: rgba(0,0,0,0.3); background: rgba(255,255,255,0.4); }
 
   /* MODAL ÉDITION */
-  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 100; align-items: center; justify-content: center; }
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 100; align-items: center; justify-content: center; }
   .modal-bg.open { display: flex; }
-  .modal { background: white; border-radius: 14px; padding: 24px; width: 100%; max-width: 420px; border: 1px solid #e0ddd8; }
-  .modal-title { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 16px; }
-  .modal-field { margin-bottom: 12px; }
-  .modal-label { font-size: 11px; color: #888; margin-bottom: 4px; display: block; }
-  .modal-inp { width: 100%; padding: 8px 12px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 13px; color: #1a1a1a; outline: none; background: #fafaf8; }
+  .modal { background: white; border-radius: 14px; padding: 26px; width: 100%; max-width: 440px; border: 1px solid #e0ddd8; }
+  .modal-title { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+  .modal-field { margin-bottom: 13px; }
+  .modal-label { font-size: 11px; color: #888; margin-bottom: 5px; display: block; }
+  .modal-inp { width: 100%; padding: 9px 12px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 13px; color: #1a1a1a; outline: none; background: #fafaf8; transition: border-color .15s; }
   .modal-inp:focus { border-color: #888; background: white; }
-  .modal-sel { width: 100%; padding: 8px 12px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 13px; color: #1a1a1a; background: #fafaf8; cursor: pointer; }
-  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+  .modal-sel { width: 100%; padding: 9px 12px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 13px; color: #1a1a1a; background: #fafaf8; cursor: pointer; }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 22px; }
   .modal-cancel { padding: 8px 16px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 13px; cursor: pointer; background: white; color: #666; }
+  .modal-cancel:hover { background: #f0ede8; }
   .modal-save { padding: 8px 20px; background: #1a1a1a; color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; }
   .modal-save:hover { background: #333; }
+
+  /* MODAL IA */
+  .modal-ai { background: #f8f7f4; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; }
+  .modal-ai-label { font-size: 11px; color: #888; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .modal-ai-row { display: flex; gap: 7px; }
+  .modal-ai-inp { flex: 1; padding: 8px 12px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 12px; background: white; color: #1a1a1a; outline: none; }
+  .modal-ai-inp:focus { border-color: #888; }
+  .modal-ai-btn { padding: 8px 14px; background: #e24b4a; color: white; border: none; border-radius: 8px; font-size: 12px; cursor: pointer; white-space: nowrap; font-weight: 500; display: flex; align-items: center; gap: 5px; }
+  .modal-ai-btn:hover { background: #a32d2d; }
+  .modal-ai-btn.loading { background: #888; cursor: wait; }
+  .modal-ai-mic { padding: 8px 10px; background: #e24b4a; color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; }
+  .modal-ai-mic:hover { background: #a32d2d; }
+  .modal-ai-mic.on { background: #a32d2d; animation: blink 1s infinite; }
+  .modal-divider { text-align: center; font-size: 10px; color: #bbb; margin: 12px 0 14px; }
 
   @media (max-width: 768px) { .board { grid-template-columns: repeat(2,1fr); } }
 </style>
@@ -150,10 +173,11 @@
 <div id="app">
 <div class="app-wrap">
   <div class="toolbar">
-    <span class="tool-title">Mes tâches</span>
+    <span class="tool-title">Mes tâches <span class="task-count" id="taskCount"></span></span>
     <span class="status s-load" id="status">Connexion…</span>
-    <button class="btn" onclick="toggleInput()">+ Ajouter</button>
-    <button class="btn btn-mic" id="micBtn" onclick="toggleMic()">
+    <span class="shortcut-hint">N = nouvelle tâche · M = micro · Échap = fermer</span>
+    <button class="btn" onclick="toggleInput()" title="Nouvelle tâche (N)">+ Ajouter</button>
+    <button class="btn btn-mic" id="micBtn" onclick="toggleMic()" title="Dicter (M)">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
         <rect x="9" y="2" width="6" height="11" rx="3"/>
         <path d="M5 10a7 7 0 0014 0M12 19v3M9 22h6"/>
@@ -164,7 +188,7 @@
   </div>
   <div class="listen-bar" id="listenBar">
     <div class="dot-pulse"></div>
-    <span id="listenMsg">Parlez… ex : "Mail à Sophie contrat renouvellement"</span>
+    <span id="listenMsg">Parlez librement… l'IA comprendra votre tâche</span>
   </div>
   <div class="input-panel" id="inputPanel">
     <input class="inp inp-action" id="iAction" placeholder="Action — Mail, Appel, Valider…" />
@@ -178,26 +202,49 @@
     <button class="btn-ok" onclick="addTask()">Ajouter</button>
   </div>
   <div class="board" id="board">
-    <div class="col col-0" id="col-0" ondragover="dragOver(event,0)" ondrop="drop(event,0)" ondragleave="dragLeave()">
+    <div class="col col-0" id="col-0" ondragover="colDragOver(event,0)" ondrop="colDrop(event,0)" ondragleave="colDragLeave()">
       <div class="col-header"><div class="col-dot d0"></div><span class="col-title">URGENT</span><span class="col-count" id="cnt-0">0</span></div>
     </div>
-    <div class="col col-1" id="col-1" ondragover="dragOver(event,1)" ondrop="drop(event,1)" ondragleave="dragLeave()">
+    <div class="col col-1" id="col-1" ondragover="colDragOver(event,1)" ondrop="colDrop(event,1)" ondragleave="colDragLeave()">
       <div class="col-header"><div class="col-dot d1"></div><span class="col-title">DEMAIN</span><span class="col-count" id="cnt-1">0</span></div>
     </div>
-    <div class="col col-2" id="col-2" ondragover="dragOver(event,2)" ondrop="drop(event,2)" ondragleave="dragLeave()">
+    <div class="col col-2" id="col-2" ondragover="colDragOver(event,2)" ondrop="colDrop(event,2)" ondragleave="colDragLeave()">
       <div class="col-header"><div class="col-dot d2"></div><span class="col-title">AVANT VENDREDI</span><span class="col-count" id="cnt-2">0</span></div>
     </div>
-    <div class="col col-3" id="col-3" ondragover="dragOver(event,3)" ondrop="drop(event,3)" ondragleave="dragLeave()">
+    <div class="col col-3" id="col-3" ondragover="colDragOver(event,3)" ondrop="colDrop(event,3)" ondragleave="colDragLeave()">
       <div class="col-header"><div class="col-dot d3"></div><span class="col-title">BACKGROUND</span><span class="col-count" id="cnt-3">0</span></div>
     </div>
   </div>
 </div>
 </div>
 
-<!-- MODAL ÉDITION -->
+<!-- LÉGENDE PICTOS -->
+<div style="max-width:1400px;margin:8px auto 0;padding:6px 16px;background:rgba(255,255,255,0.55);border-radius:10px;border:1px solid #e8e5e0;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;">
+  <span style="font-size:9px;color:#bbb;font-weight:600;letter-spacing:.06em;flex-shrink:0;">PICTOS —</span>
+  <span style="font-size:11px;color:#999;">✉️ mail &nbsp;↩️ répondre &nbsp;📞 appel &nbsp;👥 réunion &nbsp;💻 travailler sur &nbsp;✅ valider &nbsp;🔎 vérifier &nbsp;📊 rapport &nbsp;📄 rédiger &nbsp;💳 payer &nbsp;✏️ publier &nbsp;🔍 veille &nbsp;🔁 relancer &nbsp;🗂️ classer &nbsp;🛒 commander &nbsp;🎓 formation &nbsp;🚨 urgent &nbsp;📋 autre</span>
+</div>
+
+<!-- MODAL ÉDITION + IA -->
 <div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
   <div class="modal">
-    <div class="modal-title">Modifier la tâche</div>
+    <div class="modal-title">✎ Modifier la tâche</div>
+
+    <div class="modal-ai">
+      <div class="modal-ai-label">✨ Dicter ou taper en langage naturel — l'IA remplit les champs</div>
+      <div class="modal-ai-row">
+        <input class="modal-ai-inp" id="aiInput" placeholder='ex: "Appeler Sophie lundi pour le bilan fiscal"' onkeydown="if(event.key==='Enter')aiParse()" />
+        <button class="modal-ai-mic" id="aiMicBtn" onclick="toggleAiMic()" title="Dicter">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0M12 19v3M9 22h6"/></svg>
+        </button>
+        <button class="modal-ai-btn" id="aiBtn" onclick="aiParse()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          Analyser
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-divider">— ou remplissez manuellement —</div>
+
     <div class="modal-field">
       <label class="modal-label">Action</label>
       <input class="modal-inp" id="mAction" placeholder="Mail, Appel, Valider…" />
@@ -225,19 +272,27 @@
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbziY3XtF8JEbYTFjDMkQgTFz43vRhZIgr44zaMxwaDa1h2L5ySzlljea29kU19sbo0K/exec';
 const STORAGE_KEY = 'maq_token';
+const AI_URL = 'https://api.anthropic.com/v1/messages';
 
 const ACTION_PICTOS = [
-  [['mail','email','envoyer','écrire'],'✉️'],
-  [['appel','appeler','téléphone','call','rappeler'],'📞'],
-  [['réunion','meeting','rencontre','rdv'],'👥'],
-  [['valider','signer','vérifier','approuver','contrôler'],'✅'],
-  [['rapport','bilan','présentation','analyse'],'📊'],
-  [['lettre','mission','contrat','rédiger','document'],'📄'],
-  [['payer','facture','virement','régler'],'💳'],
-  [['post','linkedin','publier'],'✏️'],
-  [['veille','recherche','lire'],'🔍'],
+  [['mail','email','envoyer','écrire'],'✉️'],           // mail
+  [['répondre','réponse','reply'],'↩️'],                 // répondre
+  [['appel','appeler','téléphone','call','rappeler'],'📞'], // appel
+  [['réunion','meeting','rencontre','rdv'],'👥'],         // réunion
+  [['travailler','travail','avancer','bosser','traiter'],'💻'], // travailler sur
+  [['valider','signer','approuver','viser'],'✅'],        // valider / signer
+  [['vérifier','contrôler','relire','checker'],'🔎'],     // vérifier
+  [['rapport','bilan','présentation','analyse'],'📊'],    // analyser
+  [['lettre','mission','contrat','rédiger','document','préparer'],'📄'], // rédiger
+  [['payer','facture','virement','régler'],'💳'],         // payer
+  [['post','linkedin','publier','communication'],'✏️'],   // publier
+  [['veille','recherche','lire','chercher'],'🔍'],        // recherche
+  [['relancer','suivre','suivi','follow'],'🔁'],          // relance / suivi
+  [['classer','archiver','ranger','trier'],'🗂️'],        // classer
+  [['commander','acheter','achat','livraison'],'🛒'],     // commander
+  [['former','formation','apprendre','tutoriel'],'🎓'],   // formation
+  [['urgent','deadline','délai','priorité'],'🚨'],        // urgence
 ];
-
 function getPicto(action) {
   if (!action) return '📋';
   const a = action.toLowerCase();
@@ -245,11 +300,15 @@ function getPicto(action) {
   return '📋';
 }
 
-let tasks=[], dragId=null, nextId=1, TOKEN='', editId=null;
+let tasks=[], dragId=null, dragOverId=null, dragPos='bottom', nextId=1, TOKEN='', editId=null;
 
 function setStatus(txt,type) {
   const s=document.getElementById('status');
   s.textContent=txt; s.className='status s-'+type;
+}
+function updateCount() {
+  const n=tasks.filter(t=>!t.done).length;
+  document.getElementById('taskCount').textContent=n>0?`— ${n} active${n>1?'s':''}` :'';
 }
 
 // LOGIN
@@ -274,7 +333,7 @@ async function loadFromSheet(isLogin=false) {
     const r=await fetch(SCRIPT_URL+'?token='+encodeURIComponent(TOKEN));
     const d=await r.json();
     if (d.error) {
-      if (isLogin) { document.getElementById('loginError').classList.add('show'); TOKEN=''; }
+      if (isLogin){document.getElementById('loginError').classList.add('show');TOKEN='';}
       else setStatus('Erreur token','err');
       return;
     }
@@ -282,23 +341,22 @@ async function loadFromSheet(isLogin=false) {
     if (document.getElementById('rememberMe').checked) localStorage.setItem(STORAGE_KEY,TOKEN);
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='block';
-    tasks=d.tasks.map(t=>({...t,col:parseInt(t.col),id:parseInt(t.id),done:t.done==='true'||t.done===true}));
+    tasks=d.tasks.map((t,i)=>({...t,col:parseInt(t.col),id:parseInt(t.id),done:t.done==='true'||t.done===true,order:i}));
     nextId=tasks.length?Math.max(...tasks.map(t=>t.id))+1:1;
     setStatus('Google Sheet ✓','ok');
     render();
   } catch(e) {
     setStatus('Hors ligne','err');
-    if (isLogin) { document.getElementById('loginError').textContent='Connexion impossible.'; document.getElementById('loginError').classList.add('show'); }
+    if (isLogin){document.getElementById('loginError').textContent='Connexion impossible.';document.getElementById('loginError').classList.add('show');}
   }
 }
-
 async function saveToSheet() {
   setStatus('Sauvegarde…','load');
   try {
     await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({token:TOKEN,action:'save_all',tasks})});
     setStatus('Sauvegardé ✓','ok');
     setTimeout(()=>setStatus('Google Sheet ✓','ok'),2000);
-  } catch(e) { setStatus('Erreur sauvegarde','err'); }
+  } catch(e){setStatus('Erreur sauvegarde','err');}
 }
 
 // RENDER
@@ -306,11 +364,44 @@ function makeCard(t) {
   const el=document.createElement('div');
   el.className='card'+(t.done?' done-card':'');
   el.id='card-'+t.id;
+
   if (!t.done) {
     el.draggable=true;
-    el.ondragstart=()=>{dragId=t.id;el.classList.add('dragging');};
-    el.ondragend=()=>el.classList.remove('dragging');
+    el.ondragstart=(e)=>{
+      dragId=t.id;
+      el.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+    };
+    el.ondragend=()=>{
+      el.classList.remove('dragging');
+      document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(c=>c.classList.remove('drag-over-top','drag-over-bottom'));
+    };
+    el.ondragover=(e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      if (dragId===t.id) return;
+      const rect=el.getBoundingClientRect();
+      const mid=rect.top+rect.height/2;
+      document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(c=>c.classList.remove('drag-over-top','drag-over-bottom'));
+      dragOverId=t.id;
+      dragPos=e.clientY<mid?'top':'bottom';
+      el.classList.add(dragPos==='top'?'drag-over-top':'drag-over-bottom');
+    };
+    el.ondrop=(e)=>{
+      e.preventDefault();
+      e.stopPropagation();
+      if (dragId===null||dragId===t.id) return;
+      reorderTask(dragId, t.id, dragPos, t.col);
+      dragId=null; dragOverId=null;
+      document.querySelectorAll('.drag-over-top,.drag-over-bottom').forEach(c=>c.classList.remove('drag-over-top','drag-over-bottom'));
+    };
   }
+
+  // Handle
+  const handle=document.createElement('span');
+  handle.className='card-drag-handle';
+  handle.textContent='⠿';
+  handle.title='Glisser pour réorganiser';
 
   const check=document.createElement('div');
   check.className='card-check'+(t.done?' checked':'');
@@ -322,27 +413,25 @@ function makeCard(t) {
 
   const txt=document.createElement('div');
   txt.className='card-text';
-  txt.innerHTML=`<div class="card-subject">${t.subject||t.action||''}</div>${t.action&&t.subject?`<div class="card-action-lbl">${t.action}</div>`:''}`;
+  txt.innerHTML=`<div class="card-subject">${t.subject||t.action||''}</div>`;
 
   const btns=document.createElement('div');
   btns.className='card-btns';
-
   if (!t.done) {
-    const editBtn=document.createElement('button');
-    editBtn.className='card-btn';
-    editBtn.title='Modifier';
-    editBtn.textContent='✎';
-    editBtn.onclick=(e)=>{e.stopPropagation();openModal(t.id);};
-    btns.appendChild(editBtn);
+    const eb=document.createElement('button');
+    eb.className='card-btn'; eb.title='Modifier (double-clic)'; eb.textContent='✎';
+    eb.onclick=(e)=>{e.stopPropagation();openModal(t.id);};
+    btns.appendChild(eb);
   }
+  const db=document.createElement('button');
+  db.className='card-btn del'; db.title='Supprimer'; db.textContent='✕';
+  db.onclick=(e)=>{e.stopPropagation();deleteTask(t.id);};
+  btns.appendChild(db);
 
-  const delBtn=document.createElement('button');
-  delBtn.className='card-btn del';
-  delBtn.title='Supprimer';
-  delBtn.textContent='✕';
-  delBtn.onclick=(e)=>{e.stopPropagation();deleteTask(t.id);};
-  btns.appendChild(delBtn);
+  // Double-clic pour éditer
+  el.ondblclick=()=>{ if(!t.done) openModal(t.id); };
 
+  el.appendChild(handle);
   el.appendChild(check);
   el.appendChild(picto);
   el.appendChild(txt);
@@ -361,40 +450,60 @@ function render() {
     active.forEach(t=>col.appendChild(makeCard(t)));
     document.getElementById('cnt-'+ci).textContent=active.length;
 
-    // Drop hint
     const dh=document.createElement('div');
     dh.className='drop-hint'; dh.textContent='Déposer ici'; col.appendChild(dh);
 
-    // Zone réalisé
     if (done.length>0) {
       const zone=document.createElement('div');
       zone.className='done-zone';
-
       const toggle=document.createElement('div');
       toggle.className='done-toggle';
-      toggle.innerHTML=`<span class="arrow">▶</span> Réalisé (${done.length})`;
-      toggle.onclick=()=>{
-        toggle.classList.toggle('open');
-        list.classList.toggle('open');
-      };
-
+      toggle.innerHTML=`<span class="done-arrow">▶</span> Réalisé (${done.length})`;
       const list=document.createElement('div');
       list.className='done-list';
+      toggle.onclick=()=>{toggle.classList.toggle('open');list.classList.toggle('open');};
       done.forEach(t=>list.appendChild(makeCard(t)));
-
       zone.appendChild(toggle);
       zone.appendChild(list);
       col.appendChild(zone);
     }
   });
+  updateCount();
+}
+
+// RÉORGANISATION dans la colonne
+function reorderTask(fromId, toId, pos, toCol) {
+  const fromIdx=tasks.findIndex(t=>t.id===fromId);
+  const toIdx=tasks.findIndex(t=>t.id===toId);
+  if (fromIdx===-1||toIdx===-1) return;
+  const [moved]=tasks.splice(fromIdx,1);
+  moved.col=toCol;
+  const newToIdx=tasks.findIndex(t=>t.id===toId);
+  tasks.splice(pos==='top'?newToIdx:newToIdx+1,0,moved);
+  saveToSheet(); render();
+}
+
+// DRAG ENTRE COLONNES (drop sur fond de colonne)
+function colDragOver(e,ci) {
+  e.preventDefault();
+  document.getElementById('col-'+ci).querySelector('.drop-hint')?.classList.add('show','over');
+}
+function colDragLeave() {
+  document.querySelectorAll('.drop-hint').forEach(d=>d.classList.remove('show','over'));
+}
+function colDrop(e,ci) {
+  e.preventDefault();
+  if (dragId!==null) {
+    const t=tasks.find(t=>t.id===dragId);
+    if (t&&t.col!==ci) { t.col=ci; saveToSheet(); render(); }
+    dragId=null;
+  }
+  colDragLeave();
 }
 
 // ACTIONS
-function toggleDone(id) {
-  const t=tasks.find(t=>t.id===id);
-  if (t) { t.done=!t.done; saveToSheet(); render(); }
-}
-function deleteTask(id) { tasks=tasks.filter(t=>t.id!==id); saveToSheet(); render(); }
+function toggleDone(id){const t=tasks.find(t=>t.id===id);if(t){t.done=!t.done;saveToSheet();render();}}
+function deleteTask(id){tasks=tasks.filter(t=>t.id!==id);saveToSheet();render();}
 
 function toggleInput() {
   const p=document.getElementById('inputPanel');
@@ -406,29 +515,27 @@ function addTask() {
   const subject=document.getElementById('iSubject').value.trim();
   const col=parseInt(document.getElementById('iCol').value);
   if (!action&&!subject) return;
-  tasks.push({id:nextId++,col,action,person:'',subject,done:false});
+  tasks.unshift({id:nextId++,col,action,person:'',subject,done:false});
   document.getElementById('iAction').value='';
   document.getElementById('iSubject').value='';
   saveToSheet(); render();
 }
-document.addEventListener('keydown',e=>{
-  if (e.key==='Enter'&&document.getElementById('inputPanel').classList.contains('open')) addTask();
-  if (e.key==='Escape') closeModal();
-});
 
 // MODAL
 function openModal(id) {
   const t=tasks.find(t=>t.id===id);
   if (!t) return;
   editId=id;
+  document.getElementById('aiInput').value='';
   document.getElementById('mAction').value=t.action||'';
   document.getElementById('mSubject').value=t.subject||'';
   document.getElementById('mCol').value=t.col;
   document.getElementById('modalBg').classList.add('open');
-  document.getElementById('mSubject').focus();
+  setTimeout(()=>document.getElementById('aiInput').focus(),80);
 }
 function closeModal() {
   document.getElementById('modalBg').classList.remove('open');
+  stopAiMic();
   editId=null;
 }
 function saveModal() {
@@ -437,21 +544,54 @@ function saveModal() {
   t.action=document.getElementById('mAction').value.trim();
   t.subject=document.getElementById('mSubject').value.trim();
   t.col=parseInt(document.getElementById('mCol').value);
-  closeModal();
-  saveToSheet(); render();
+  closeModal(); saveToSheet(); render();
 }
 
-// DRAG & DROP
-function dragOver(e,ci){e.preventDefault();document.getElementById('col-'+ci).querySelector('.drop-hint')?.classList.add('show','over');}
-function dragLeave(){document.querySelectorAll('.drop-hint').forEach(d=>d.classList.remove('show','over'));}
-function drop(e,ci){
-  e.preventDefault();
-  if (dragId!==null){const t=tasks.find(t=>t.id===dragId);if(t){t.col=ci;saveToSheet();render();}dragId=null;}
-  dragLeave();
+// IA PARSE
+async function aiParse() {
+  const txt=document.getElementById('aiInput').value.trim();
+  if (!txt) return;
+  const btn=document.getElementById('aiBtn');
+  btn.classList.add('loading'); btn.textContent='…';
+
+  try {
+    const res=await fetch(AI_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:200,
+        messages:[{role:'user',content:`Tu es un assistant qui analyse des tâches professionnelles françaises.
+Analyse cette tâche et réponds UNIQUEMENT en JSON valide, sans aucun autre texte :
+{"action":"<verbe court ex: Mail/Appel/Valider/Rédiger/Réunion>","subject":"<sujet concis>","col":<0=urgent,1=demain,2=avant vendredi,3=background>}
+
+Tâche : "${txt}"
+Déduis la priorité/colonne selon l'urgence implicite du texte.`}]
+      })
+    });
+    const data=await res.json();
+    const raw=data.content?.[0]?.text||'';
+    const parsed=JSON.parse(raw.replace(/```json?|```/g,'').trim());
+    if (parsed.action) document.getElementById('mAction').value=parsed.action;
+    if (parsed.subject) document.getElementById('mSubject').value=parsed.subject;
+    if (parsed.col!==undefined) document.getElementById('mCol').value=parsed.col;
+  } catch(e) {
+    // Fallback règles simples
+    const tl=txt.toLowerCase();
+    let action='',subject=txt;
+    if(tl.includes('mail')||tl.includes('email')){action='Mail';}
+    else if(tl.includes('appel')||tl.includes('appeler')){action='Appel';}
+    else if(tl.includes('réunion')||tl.includes('rdv')){action='Réunion';}
+    else if(tl.includes('valider')||tl.includes('signer')){action='Valider';}
+    if(action) document.getElementById('mAction').value=action;
+    document.getElementById('mSubject').value=subject;
+  }
+  btn.classList.remove('loading');
+  btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Analyser';
 }
 
-// MIC
-let recog=null,listening=false;
+// MIC GLOBAL (barre du haut → ouvre modal avec dictée)
+let recog=null, listening=false;
 function toggleMic(){listening?stopMic():startMic();}
 function startMic(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -459,23 +599,56 @@ function startMic(){
   recog=new SR();recog.lang='fr-FR';recog.interimResults=false;
   recog.onresult=e=>{
     const txt=e.results[0][0].transcript;
-    const tl=txt.toLowerCase();
-    let action='',subject='';
-    const mM=tl.match(/mail\s+[àa]\s+([\w\s\-]+?)(?:\s+(?:re|sujet|pour)\s*:?\s*(.+))?$/i);
-    if(mM){action='Mail';subject=(mM[2]||mM[1]||'').trim();}
-    else{const mC=tl.match(/appel(?:er)?\s+([\w\s\-]+?)(?:\s+(?:re|pour)\s*:?\s*(.+))?$/i);if(mC){action='Appel';subject=(mC[2]||mC[1]||'').trim();}else{subject=txt;}}
-    document.getElementById('iAction').value=action;
-    document.getElementById('iSubject').value=subject||txt;
-    document.getElementById('inputPanel').classList.add('open');
-    document.getElementById('listenMsg').textContent='✓ "'+txt+'" — vérifiez et confirmez.';
     stopMic();
+    // Ouvre la modal avec le texte dicté prêt pour l'IA
+    editId=null;
+    document.getElementById('aiInput').value=txt;
+    document.getElementById('mAction').value='';
+    document.getElementById('mSubject').value='';
+    document.getElementById('mCol').value=0;
+    document.getElementById('modalBg').classList.add('open');
+    document.getElementById('listenMsg').textContent='✓ "'+txt+'" — analysez avec l\'IA ou modifiez manuellement.';
+    // Auto-analyse IA
+    aiParse();
   };
   recog.onerror=recog.onend=()=>stopMic();
   recog.start();listening=true;
   document.getElementById('micBtn').classList.add('on');
   document.getElementById('listenBar').classList.add('show');
+  document.getElementById('listenMsg').textContent='Parlez librement… l\'IA analysera votre tâche';
 }
 function stopMic(){try{recog&&recog.stop();}catch(e){}listening=false;document.getElementById('micBtn').classList.remove('on');}
+
+// MIC DANS LA MODAL
+let aiRecog=null, aiListening=false;
+function toggleAiMic(){aiListening?stopAiMic():startAiMic();}
+function startAiMic(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return;
+  aiRecog=new SR();aiRecog.lang='fr-FR';aiRecog.interimResults=false;
+  aiRecog.onresult=e=>{
+    document.getElementById('aiInput').value=e.results[0][0].transcript;
+    stopAiMic(); aiParse();
+  };
+  aiRecog.onerror=aiRecog.onend=()=>stopAiMic();
+  aiRecog.start();aiListening=true;
+  document.getElementById('aiMicBtn').classList.add('on');
+}
+function stopAiMic(){try{aiRecog&&aiRecog.stop();}catch(e){}aiListening=false;document.getElementById('aiMicBtn').classList.remove('on');}
+
+// RACCOURCIS CLAVIER
+document.addEventListener('keydown',e=>{
+  const tag=document.activeElement.tagName;
+  const isInput=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT';
+  if (e.key==='Escape') { closeModal(); if(document.getElementById('inputPanel').classList.contains('open')) toggleInput(); stopMic(); }
+  if (!isInput && !document.getElementById('modalBg').classList.contains('open')) {
+    if (e.key==='n'||e.key==='N') { e.preventDefault(); toggleInput(); }
+    if (e.key==='m'||e.key==='M') { e.preventDefault(); toggleMic(); }
+  }
+  if (e.key==='Enter' && document.getElementById('inputPanel').classList.contains('open') && !document.getElementById('modalBg').classList.contains('open')) addTask();
+  if (e.key==='Enter' && document.getElementById('modalBg').classList.contains('open') && document.activeElement===document.getElementById('aiInput')) aiParse();
+  if (e.key==='Enter' && document.getElementById('modalBg').classList.contains('open') && document.activeElement===document.getElementById('mSubject')) saveModal();
+});
 
 // INIT
 const saved=localStorage.getItem(STORAGE_KEY);
