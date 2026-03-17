@@ -72,66 +72,92 @@
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.65} }
   /* BOUTON FLOTTANT MOBILE */
   .fab { display: none; position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; background: #2d5a2d; color: white; border: none; border-radius: 50%; font-size: 28px; cursor: pointer; z-index: 50; box-shadow: 0 4px 16px rgba(0,0,0,0.2); align-items: center; justify-content: center; }
-  @media (max-width: 768px) {
-    body { padding: 4px; }
+  @media screen and (max-width: 768px) {
+    body { padding: 4px !important; background: #fff !important; }
 
-    /* TOOLBAR : une seule ligne compacte */
-    .app-wrap { border-radius: 10px; }
-    .toolbar { padding: 6px 8px; gap: 5px; flex-wrap: nowrap; overflow: hidden; }
-    .tool-title { font-size: 11px; white-space: nowrap; flex-shrink: 1; min-width: 0; }
-    .task-count { display: none; }
-    .status { font-size: 9px; padding: 2px 6px; white-space: nowrap; flex-shrink: 0; }
-    .search-wrap { display: none; }
-    .btn { font-size: 11px; padding: 5px 9px; white-space: nowrap; flex-shrink: 0; }
-    .btn-mic { font-size: 11px; padding: 5px 9px; }
-    .btn-logout { font-size: 10px; padding: 4px 7px; }
-    .shortcut-hint { display: none; }
+    /* TOOLBAR compacte 1 ligne */
+    .app-wrap { border-radius: 8px !important; overflow: hidden !important; }
+    .toolbar { padding: 6px 8px !important; gap: 5px !important; flex-wrap: nowrap !important; }
+    .tool-title { font-size: 11px !important; white-space: nowrap !important; overflow: hidden !important; flex-shrink: 1 !important; min-width: 0 !important; max-width: 80px !important; }
+    .task-count { display: none !important; }
+    .status { font-size: 9px !important; padding: 2px 5px !important; white-space: nowrap !important; flex-shrink: 0 !important; }
+    .search-wrap { display: none !important; }
+    .shortcut-hint { display: none !important; }
+    .btn { font-size: 11px !important; padding: 5px 8px !important; white-space: nowrap !important; flex-shrink: 0 !important; }
+    .btn-mic { font-size: 11px !important; padding: 5px 8px !important; }
+    .btn-logout { font-size: 10px !important; padding: 4px 6px !important; }
 
-    /* Barre recherche séparée sous la toolbar */
-    .input-panel { flex-wrap: wrap; }
-
-    /* BOARD : 2 colonnes qui remplissent exactement l'écran */
+    /* BOARD 2x2 */
     .board { 
-      display: grid; 
-      grid-template-columns: 1fr 1fr; 
-      gap: 5px; 
-      padding: 5px; 
-      min-height: unset;
-      width: 100%;
+      display: grid !important;
+      grid-template-columns: calc(50% - 3px) calc(50% - 3px) !important;
+      gap: 5px !important;
+      padding: 5px !important;
+      min-height: unset !important;
+      width: calc(100vw - 8px) !important;
+      max-width: calc(100vw - 8px) !important;
+      overflow: hidden !important;
     }
 
     /* COLONNES */
-    .col { padding: 6px; gap: 4px; min-height: 150px; min-width: 0; overflow: hidden; }
-    .col-header { padding-bottom: 4px; margin-bottom: 1px; gap: 4px; }
-    .col-title { font-size: 9px; letter-spacing: .02em; }
-    .col-count { font-size: 9px; padding: 1px 4px; }
-    .col-dot { width: 6px; height: 6px; }
+    .col { 
+      padding: 6px !important; 
+      gap: 4px !important; 
+      min-height: 120px !important; 
+      min-width: 0 !important; 
+      max-width: 100% !important;
+      overflow: hidden !important; 
+      width: 100% !important;
+    }
+    .col-header { padding-bottom: 4px !important; margin-bottom: 1px !important; gap: 4px !important; }
+    .col-title { font-size: 9px !important; letter-spacing: .01em !important; }
+    .col-count { font-size: 9px !important; padding: 1px 4px !important; }
+    .col-dot { width: 6px !important; height: 6px !important; }
 
     /* CARTES */
-    .card { padding: 5px 6px; gap: 5px; border-radius: 6px; min-width: 0; }
-    .picto { font-size: 14px; flex-shrink: 0; }
-    .card-subject { font-size: 10px; line-height: 1.3; white-space: normal; word-break: break-word; }
-    .card-check { width: 13px; height: 13px; flex-shrink: 0; }
-    .card-check.checked::after { font-size: 7px; }
-    .drag-handle { display: none; }
-    .card-btns { display: flex; flex-shrink: 0; }
-    .card-btn { font-size: 12px; opacity: 1; color: #ccc; padding: 0 1px; }
-    .card-action-lbl { display: none; }
-    .recur-badge { font-size: 8px; }
+    .card { 
+      padding: 5px 5px !important; 
+      gap: 4px !important; 
+      border-radius: 6px !important; 
+      min-width: 0 !important;
+      max-width: 100% !important;
+      overflow: hidden !important;
+    }
+    .picto { font-size: 13px !important; flex-shrink: 0 !important; }
+    .card-text { min-width: 0 !important; overflow: hidden !important; flex: 1 !important; }
+    .card-subject { font-size: 10px !important; line-height: 1.25 !important; white-space: normal !important; word-break: break-word !important; overflow: hidden !important; }
+    .card-check { width: 13px !important; height: 13px !important; flex-shrink: 0 !important; }
+    .card-check.checked::after { font-size: 7px !important; }
+    .drag-handle { display: none !important; }
+    .card-btns { flex-shrink: 0 !important; }
+    .card-btn { font-size: 11px !important; color: #ccc !important; padding: 0 !important; }
+    .recur-badge { font-size: 8px !important; }
 
     /* ZONE RÉALISÉ */
-    .done-toggle { font-size: 9px; padding: 3px 2px; }
+    .done-toggle { font-size: 9px !important; padding: 3px 2px !important; }
+    .done-zone { margin-top: 4px !important; }
 
     /* LÉGENDE masquée */
     .pictos-legend { display: none !important; }
 
     /* FAB */
-    .fab { display: flex; width: 50px; height: 50px; font-size: 26px; bottom: 20px; right: 16px; }
+    .fab { display: flex !important; width: 50px !important; height: 50px !important; font-size: 26px !important; bottom: 20px !important; right: 16px !important; }
 
     /* LOGIN */
-    .login-card { padding: 28px 20px; }
+    .login-card { padding: 28px 20px !important; }
   }
 
+
+  /* SÉLECTEUR PICTO MANUEL */
+  .picto-selector { display: none; flex-wrap: wrap; gap: 6px; margin-top: 8px; padding: 10px; background: #f8f7f4; border-radius: 10px; border: 1px solid #e0ddd8; }
+  .picto-selector.show { display: flex; }
+  .picto-opt { font-size: 20px; cursor: pointer; padding: 5px 7px; border-radius: 7px; border: 1.5px solid transparent; transition: all .15s; line-height: 1; }
+  .picto-opt:hover { background: #eee; }
+  .picto-opt.selected { border-color: #185fa5; background: #e6f1fb; }
+  .picto-label { font-size: 10px; color: #888; margin-bottom: 4px; display: block; }
+  .picto-current { font-size: 22px; cursor: pointer; padding: 3px 6px; border-radius: 7px; border: 1px solid #d0cdc8; background: white; transition: background .15s; }
+  .picto-current:hover { background: #f0ede8; }
+  .picto-row { display: flex; align-items: center; gap: 8px; }
   /* RÉCURRENCE */
   .recur-badge { font-size: 10px; color: #185fa5; background: #e6f1fb; border-radius: 4px; padding: 1px 5px; margin-top: 3px; display: inline-block; }
 
@@ -318,7 +344,7 @@
 <!-- LÉGENDE PICTOS -->
 <div class="pictos-legend" style="max-width:1400px;margin:8px auto 0;padding:6px 16px;background:rgba(248,247,244,0.9);border-radius:10px;border:1px solid #e8e5e0;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;">
   <span style="font-size:9px;color:#bbb;font-weight:600;letter-spacing:.06em;flex-shrink:0;">PICTOS —</span>
-  <span style="font-size:11px;color:#999;">✉️ mail &nbsp;↩️ répondre &nbsp;📞 appel &nbsp;👥 réunion &nbsp;💻 travailler sur &nbsp;✅ valider &nbsp;🔎 vérifier &nbsp;📊 rapport &nbsp;📄 rédiger &nbsp;💳 payer &nbsp;✏️ publier &nbsp;🔍 veille &nbsp;🔁 relancer &nbsp;🗂️ classer &nbsp;🛒 commander &nbsp;🎓 formation &nbsp;🚨 urgent &nbsp;📋 autre</span>
+  <span style="font-size:11px;color:#999;">✉️ mail &nbsp;💬 répondre &nbsp;📞 appel &nbsp;👥 réunion &nbsp;⚙️ travailler &nbsp;✅ valider &nbsp;🔎 vérifier &nbsp;📊 rapport/CR &nbsp;🖼️ présentation &nbsp;📄 rédiger &nbsp;💳 payer &nbsp;✏️ publier &nbsp;🔍 veille &nbsp;🔁 relancer &nbsp;🗂️ classer &nbsp;🛒 commander &nbsp;🎓 formation &nbsp;🚨 urgent &nbsp;🖥️ dev &nbsp;🚀 déployer &nbsp;🔧 configurer &nbsp;📋 autre</span>
 </div>
 
 <!-- CONFIRMATION SUPPRESSION -->
@@ -339,7 +365,35 @@
     <div class="modal-title">Modifier la tâche</div>
     <div class="modal-field">
       <label class="modal-label">Action</label>
-      <input class="modal-inp" id="mAction" placeholder="Mail, Appel, Valider…" />
+      <div class="picto-row">
+        <button class="picto-current" id="mPictoBtn" onclick="togglePictoSelector()" title="Changer le picto">📋</button>
+        <input class="modal-inp" id="mAction" placeholder="Mail, Appel, Valider…" oninput="autoPickPicto(this.value)" style="flex:1;" />
+      </div>
+      <div class="picto-selector" id="pictoSelector">
+        <span class="picto-label" style="width:100%;">Choisir un picto :</span>
+        <button class="picto-opt" onclick="selectPicto('✉️')">✉️</button>
+        <button class="picto-opt" onclick="selectPicto('💬')">💬</button>
+        <button class="picto-opt" onclick="selectPicto('📞')">📞</button>
+        <button class="picto-opt" onclick="selectPicto('👥')">👥</button>
+        <button class="picto-opt" onclick="selectPicto('⚙️')">⚙️</button>
+        <button class="picto-opt" onclick="selectPicto('✅')">✅</button>
+        <button class="picto-opt" onclick="selectPicto('🔎')">🔎</button>
+        <button class="picto-opt" onclick="selectPicto('📊')">📊</button>
+        <button class="picto-opt" onclick="selectPicto('🖼️')">🖼️</button>
+        <button class="picto-opt" onclick="selectPicto('📄')">📄</button>
+        <button class="picto-opt" onclick="selectPicto('💳')">💳</button>
+        <button class="picto-opt" onclick="selectPicto('✏️')">✏️</button>
+        <button class="picto-opt" onclick="selectPicto('🔍')">🔍</button>
+        <button class="picto-opt" onclick="selectPicto('🔁')">🔁</button>
+        <button class="picto-opt" onclick="selectPicto('🗂️')">🗂️</button>
+        <button class="picto-opt" onclick="selectPicto('🛒')">🛒</button>
+        <button class="picto-opt" onclick="selectPicto('🎓')">🎓</button>
+        <button class="picto-opt" onclick="selectPicto('🚨')">🚨</button>
+        <button class="picto-opt" onclick="selectPicto('🖥️')">🖥️</button>
+        <button class="picto-opt" onclick="selectPicto('🚀')">🚀</button>
+        <button class="picto-opt" onclick="selectPicto('🔧')">🔧</button>
+        <button class="picto-opt" onclick="selectPicto('📋')">📋</button>
+      </div>
     </div>
     <div class="modal-field">
       <label class="modal-label">Sujet / détail</label>
@@ -379,23 +433,27 @@ const STORAGE_KEY = 'maq_token';
 const AI_URL = 'https://api.anthropic.com/v1/messages';
 
 const ACTION_PICTOS = [
-  [['mail','email','envoyer','écrire'],'✉️'],           // mail
-  [['répondre','réponse','reply'],'↩️'],                 // répondre
-  [['appel','appeler','téléphone','call','rappeler'],'📞'], // appel
-  [['réunion','meeting','rencontre','rdv'],'👥'],         // réunion
-  [['travailler','travail','avancer','bosser','traiter'],'💻'], // travailler sur
-  [['valider','signer','approuver','viser'],'✅'],        // valider / signer
-  [['vérifier','contrôler','relire','checker'],'🔎'],     // vérifier
-  [['rapport','bilan','présentation','analyse'],'📊'],    // analyser
-  [['lettre','mission','contrat','rédiger','document','préparer'],'📄'], // rédiger
-  [['payer','facture','virement','régler'],'💳'],         // payer
-  [['post','linkedin','publier','communication'],'✏️'],   // publier
-  [['veille','recherche','lire','chercher'],'🔍'],        // recherche
-  [['relancer','suivre','suivi','follow'],'🔁'],          // relance / suivi
-  [['classer','archiver','ranger','trier'],'🗂️'],        // classer
-  [['commander','acheter','achat','livraison'],'🛒'],     // commander
-  [['former','formation','apprendre','tutoriel'],'🎓'],   // formation
-  [['urgent','deadline','délai','priorité'],'🚨'],        // urgence
+  [['mail','email','envoyer','écrire'],                          '✉️'],
+  [['répondre','réponse','reply'],                               '💬'],
+  [['appel','appeler','téléphone','call','rappeler'],            '📞'],
+  [['réunion','meeting','rencontre','rdv'],                      '👥'],
+  [['travailler','travail','avancer','bosser','traiter'],        '⚙️'],
+  [['valider','signer','approuver','viser'],                     '✅'],
+  [['vérifier','contrôler','relire','checker'],                  '🔎'],
+  [['rapport','bilan','analyse','compte rendu','cr'],            '📊'],
+  [['préparer présentation','slides','diapo','pitch'],           '🖼️'],
+  [['lettre','mission','contrat','rédiger','document'],          '📄'],
+  [['payer','facture','virement','régler'],                      '💳'],
+  [['post','linkedin','publier','communication'],                 '✏️'],
+  [['veille','recherche','lire','chercher'],                     '🔍'],
+  [['relancer','suivre','suivi','follow'],                       '🔁'],
+  [['classer','archiver','ranger','trier'],                      '🗂️'],
+  [['commander','acheter','achat','livraison'],                  '🛒'],
+  [['former','formation','apprendre','tutoriel'],                '🎓'],
+  [['urgent','deadline','délai','priorité'],                     '🚨'],
+  [['développer','coder','programmer','dev','intégrer'],         '🖥️'],
+  [['déployer','déploiement','mise en prod','livrer'],           '🚀'],
+  [['configurer','paramétrer','installer','setup'],              '🔧'],
 ];
 function getPicto(action) {
   if (!action) return '📋';
@@ -513,7 +571,7 @@ function makeCard(t) {
 
   const picto=document.createElement('span');
   picto.className='picto';
-  picto.textContent=getPicto(t.action);
+  picto.textContent=t.picto||getPicto(t.action);
 
   const txt=document.createElement('div');
   txt.className='card-text';
@@ -666,6 +724,10 @@ function openModal(id) {
   document.getElementById('mAction').value=t.action||'';
   document.getElementById('mSubject').value=t.subject||'';
   document.getElementById('mCol').value=t.col;
+  manualPicto = t.picto || null;
+  document.getElementById('mPictoBtn').textContent = t.picto || getPicto(t.action);
+  document.getElementById('pictoSelector').classList.remove('show');
+  document.querySelectorAll('.picto-opt').forEach(b => b.classList.remove('selected'));
   document.getElementById('mRecur').checked = !!(t.recur);
   document.getElementById('mRecurFreq').value = t.recurFreq||'weekly';
   document.getElementById('mRecurFreq').style.display = t.recur ? 'inline-block':'none';
