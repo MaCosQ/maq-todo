@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mes tâches — QUERCY</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #f4f3f0;
+    min-height: 100vh;
+    padding: 12px;
+    color: #1a1a1a;
+  }
+
+  .app {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #e0ddd8;
+  }
+
+  /* TOOLBAR */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 16px;
+    background: #f8f7f4;
+    border-bottom: 1px solid #e0ddd8;
+  }
+  .tool-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    flex: 1;
+    letter-spacing: .01em;
+  }
+  .status {
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-weight: 500;
+  }
+  .s-ok { background: #eaf3de; color: #3b6d11; }
+  .s-err { background: #fcebeb; color: #a32d2d; }
+  .s-load { background: #f1efe8; color: #5f5e5a; }
+
+  .btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    border: 1px solid #d0cdc8;
+    background: white;
+    color: #444;
+    font-weight: 500;
+    transition: background .15s;
+  }
+  .btn:hover { background: #f0ede8; }
+  .btn-mic {
+    display: flex; align-items: center; gap: 6px;
+    background: #e24b4a; color: white; border-color: #e24b4a;
+  }
+  .btn-mic:hover { background: #a32d2d; border-color: #a32d2d; }
+  .btn-mic.on { background: #a32d2d; border-color: #a32d2d; animation: blink 1s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.65} }
+
+  /* LISTEN BAR */
+  .listen-bar {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: #fcebeb;
+    border-bottom: 1px solid #f09595;
+    font-size: 11px;
+    color: #a32d2d;
+  }
+  .listen-bar.show { display: flex; }
+  .dot-pulse {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #e24b4a; animation: blink .9s infinite; flex-shrink: 0;
+  }
+
+  /* INPUT PANEL */
+  .input-panel {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-bottom: 1px solid #e0ddd8;
+    flex-wrap: wrap;
+    background: #fafaf8;
+  }
+  .input-panel.open { display: flex; }
+  .inp {
+    padding: 7px 12px;
+    border: 1px solid #d0cdc8;
+    border-radius: 8px;
+    font-size: 12px;
+    background: white;
+    color: #1a1a1a;
+    outline: none;
+    transition: border-color .15s;
+  }
+  .inp:focus { border-color: #888; }
+  .inp-action { flex: 1; min-width: 130px; }
+  .inp-subject { flex: 2; min-width: 200px; }
+  .sel-col {
+    padding: 7px 10px;
+    border: 1px solid #d0cdc8;
+    border-radius: 8px;
+    font-size: 12px;
+    background: white;
+    color: #1a1a1a;
+    cursor: pointer;
+  }
+  .btn-ok {
+    padding: 7px 16px;
+    background: #1a1a1a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .btn-ok:hover { background: #333; }
+
+  /* BOARD */
+  .board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 12px;
+    min-height: 500px;
+    background: #f4f3f0;
+  }
+
+  .col {
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-height: 460px;
+  }
+  .col-0 { background: #fcebeb; border: 1.5px solid #f09595; }
+  .col-1 { background: #faeeda; border: 1.5px solid #fac775; }
+  .col-2 { background: #eaf3de; border: 1.5px solid #c0dd97; }
+  .col-3 { background: #e6f1fb; border: 1.5px solid #b5d4f4; }
+
+  .col-header {
+    display: flex; align-items: center; gap: 7px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    margin-bottom: 2px;
+  }
+  .col-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .d0 { background: #e24b4a; } .d1 { background: #ba7517; }
+  .d2 { background: #3b6d11; } .d3 { background: #185fa5; }
+  .col-title { font-size: 11px; font-weight: 600; color: #333; flex: 1; letter-spacing: .05em; }
+  .col-count {
+    font-size: 10px; color: #666;
+    background: rgba(255,255,255,0.7);
+    border-radius: 99px; padding: 1px 7px;
+  }
+
+  /* CARDS */
+  .card {
+    background: white;
+    border-radius: 9px;
+    padding: 9px 11px;
+    border: 1px solid rgba(0,0,0,0.08);
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    transition: transform .15s, box-shadow .15s;
+    user-select: none;
+  }
+  .card:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.07); }
+  .card.dragging { opacity: .4; cursor: grabbing; }
+  .picto { font-size: 20px; line-height: 1; flex-shrink: 0; }
+  .card-text { flex: 1; min-width: 0; }
+  .card-subject {
+    font-size: 12px; font-weight: 600; color: #1a1a1a;
+    line-height: 1.35; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-action {
+    font-size: 11px; color: #777; margin-top: 1px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-del {
+    opacity: 0; font-size: 13px; cursor: pointer;
+    color: #aaa; background: none; border: none; padding: 0 2px;
+    transition: opacity .15s; flex-shrink: 0;
+  }
+  .card:hover .card-del { opacity: 1; }
+  .card-del:hover { color: #e24b4a; }
+
+  /* DROP HINT */
+  .drop-hint {
+    border: 1.5px dashed rgba(0,0,0,0.15);
+    border-radius: 9px; height: 36px;
+    display: none; align-items: center;
+    justify-content: center; font-size: 10px; color: #aaa;
+  }
+  .drop-hint.show { display: flex; }
+  .drop-hint.over { border-color: rgba(0,0,0,0.3); background: rgba(255,255,255,0.4); }
+
+  @media (max-width: 768px) {
+    .board { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <div class="toolbar">
+    <span class="tool-title">Mes tâches</span>
+    <span class="status s-load" id="status">Connexion…</span>
+    <button class="btn" onclick="toggleInput()">+ Ajouter</button>
+    <button class="btn btn-mic" id="micBtn" onclick="toggleMic()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
+        <rect x="9" y="2" width="6" height="11" rx="3"/>
+        <path d="M5 10a7 7 0 0014 0M12 19v3M9 22h6"/>
+      </svg>
+      Dicter
+    </button>
+  </div>
+
+  <div class="listen-bar" id="listenBar">
+    <div class="dot-pulse"></div>
+    <span id="listenMsg">Parlez… ex : "Mail à Sophie contrat renouvellement"</span>
+  </div>
+
+  <div class="input-panel" id="inputPanel">
+    <input class="inp inp-action" id="iAction" placeholder="Action — Mail, Appel, Valider…" />
+    <input class="inp inp-subject" id="iSubject" placeholder="Sujet / détail" />
+    <select class="sel-col" id="iCol">
+      <option value="0">🔴 Urgent</option>
+      <option value="1">🟠 Demain</option>
+      <option value="2">🟢 Avant vendredi</option>
+      <option value="3">🔵 Background</option>
+    </select>
+    <button class="btn-ok" onclick="addTask()">Ajouter</button>
+  </div>
+
+  <div class="board" id="board">
+    <div class="col col-0" id="col-0" ondragover="dragOver(event,0)" ondrop="drop(event,0)" ondragleave="dragLeave()">
+      <div class="col-header"><div class="col-dot d0"></div><span class="col-title">URGENT</span><span class="col-count" id="cnt-0">0</span></div>
+    </div>
+    <div class="col col-1" id="col-1" ondragover="dragOver(event,1)" ondrop="drop(event,1)" ondragleave="dragLeave()">
+      <div class="col-header"><div class="col-dot d1"></div><span class="col-title">DEMAIN</span><span class="col-count" id="cnt-1">0</span></div>
+    </div>
+    <div class="col col-2" id="col-2" ondragover="dragOver(event,2)" ondrop="drop(event,2)" ondragleave="dragLeave()">
+      <div class="col-header"><div class="col-dot d2"></div><span class="col-title">AVANT VENDREDI</span><span class="col-count" id="cnt-2">0</span></div>
+    </div>
+    <div class="col col-3" id="col-3" ondragover="dragOver(event,3)" ondrop="drop(event,3)" ondragleave="dragLeave()">
+      <div class="col-header"><div class="col-dot d3"></div><span class="col-title">BACKGROUND</span><span class="col-count" id="cnt-3">0</span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbziY3XtF8JEbYTFjDMkQgTFz43vRhZIgr44zaMxwaDa1h2L5ySzlljea29kU19sbo0K/exec';
+const TOKEN = 'ToDo2026Maq';
+
+const ACTION_PICTOS = [
+  [['mail','email','envoyer','écrire'], '✉️'],
+  [['appel','appeler','téléphone','call','rappeler'], '📞'],
+  [['réunion','meeting','rencontre','rdv'], '👥'],
+  [['valider','signer','vérifier','approuver','contrôler'], '✅'],
+  [['rapport','bilan','présentation','analyse'], '📊'],
+  [['lettre','mission','contrat','rédiger','document'], '📄'],
+  [['payer','facture','virement','régler'], '💳'],
+  [['post','linkedin','publier'], '✏️'],
+  [['veille','recherche','lire'], '🔍'],
+];
+
+function getPicto(action) {
+  if (!action) return '📋';
+  const a = action.toLowerCase();
+  for (const [kws, p] of ACTION_PICTOS)
+    if (kws.some(k => a.includes(k))) return p;
+  return '📋';
+}
+
+let tasks = [], dragId = null, nextId = 1;
+
+function setStatus(txt, type) {
+  const s = document.getElementById('status');
+  s.textContent = txt;
+  s.className = 'status s-' + type;
+}
+
+async function loadFromSheet() {
+  setStatus('Connexion…', 'load');
+  try {
+    const r = await fetch(SCRIPT_URL + '?token=' + TOKEN);
+    const d = await r.json();
+    if (d.error) { setStatus('Erreur token', 'err'); return; }
+    tasks = d.tasks.map(t => ({ ...t, col: parseInt(t.col), id: parseInt(t.id) }));
+    nextId = tasks.length ? Math.max(...tasks.map(t => t.id)) + 1 : 1;
+    setStatus('Google Sheet ✓', 'ok');
+    render();
+  } catch (e) {
+    setStatus('Hors ligne', 'err');
+    render();
+  }
+}
+
+async function saveToSheet() {
+  setStatus('Sauvegarde…', 'load');
+  try {
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ token: TOKEN, action: 'save_all', tasks }),
+    });
+    setStatus('Sauvegardé ✓', 'ok');
+    setTimeout(() => setStatus('Google Sheet ✓', 'ok'), 2000);
+  } catch (e) {
+    setStatus('Erreur sauvegarde', 'err');
+  }
+}
+
+function makeCard(t) {
+  const el = document.createElement('div');
+  el.className = 'card'; el.id = 'card-' + t.id; el.draggable = true;
+  el.ondragstart = () => { dragId = t.id; el.classList.add('dragging'); };
+  el.ondragend = () => el.classList.remove('dragging');
+  const picto = getPicto(t.action);
+  el.innerHTML = `
+    <span class="picto">${picto}</span>
+    <div class="card-text">
+      <div class="card-subject">${t.subject || t.action || ''}</div>
+      ${t.action && t.subject ? `<div class="card-action">${t.action}</div>` : ''}
+    </div>
+    <button class="card-del" onclick="deleteTask(${t.id})" title="Supprimer">✕</button>`;
+  return el;
+}
+
+function render() {
+  [0, 1, 2, 3].forEach(ci => {
+    const col = document.getElementById('col-' + ci);
+    col.querySelectorAll('.card, .drop-hint').forEach(e => e.remove());
+    tasks.filter(t => t.col === ci).forEach(t => col.appendChild(makeCard(t)));
+    document.getElementById('cnt-' + ci).textContent = tasks.filter(t => t.col === ci).length;
+    const dh = document.createElement('div');
+    dh.className = 'drop-hint'; dh.textContent = 'Déposer ici'; col.appendChild(dh);
+  });
+}
+
+function dragOver(e, ci) {
+  e.preventDefault();
+  document.getElementById('col-' + ci).querySelector('.drop-hint')?.classList.add('show', 'over');
+}
+function dragLeave() {
+  document.querySelectorAll('.drop-hint').forEach(d => d.classList.remove('show', 'over'));
+}
+function drop(e, ci) {
+  e.preventDefault();
+  if (dragId !== null) {
+    const t = tasks.find(t => t.id === dragId);
+    if (t) { t.col = ci; saveToSheet(); render(); }
+    dragId = null;
+  }
+  dragLeave();
+}
+
+function deleteTask(id) { tasks = tasks.filter(t => t.id !== id); saveToSheet(); render(); }
+
+function toggleInput() {
+  const p = document.getElementById('inputPanel');
+  p.classList.toggle('open');
+  if (p.classList.contains('open')) document.getElementById('iAction').focus();
+}
+
+function addTask() {
+  const action = document.getElementById('iAction').value.trim();
+  const subject = document.getElementById('iSubject').value.trim();
+  const col = parseInt(document.getElementById('iCol').value);
+  if (!action && !subject) return;
+  tasks.push({ id: nextId++, col, action, person: '', subject });
+  document.getElementById('iAction').value = '';
+  document.getElementById('iSubject').value = '';
+  saveToSheet(); render();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('inputPanel').classList.contains('open')) addTask();
+});
+
+function parseVoice(txt) {
+  const t = txt.toLowerCase();
+  let action = '', subject = '';
+  const mMail = t.match(/mail\s+[àa]\s+([\w\s\-]+?)(?:\s+(?:re|sujet|pour)\s*:?\s*(.+))?$/i);
+  if (mMail) { action = 'Mail'; subject = (mMail[2] || mMail[1] || '').trim(); }
+  else {
+    const mCall = t.match(/appel(?:er)?\s+([\w\s\-]+?)(?:\s+(?:re|pour)\s*:?\s*(.+))?$/i);
+    if (mCall) { action = 'Appel'; subject = (mCall[2] || mCall[1] || '').trim(); }
+    else { subject = txt; }
+  }
+  return { action, subject };
+}
+
+let recog = null, listening = false;
+function toggleMic() { listening ? stopMic() : startMic(); }
+function startMic() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    document.getElementById('listenMsg').textContent = 'Non disponible — utilisez Chrome.';
+    document.getElementById('listenBar').classList.add('show');
+    return;
+  }
+  recog = new SR(); recog.lang = 'fr-FR'; recog.interimResults = false;
+  recog.onresult = e => {
+    const txt = e.results[0][0].transcript;
+    const p = parseVoice(txt);
+    document.getElementById('iAction').value = p.action;
+    document.getElementById('iSubject').value = p.subject || txt;
+    document.getElementById('inputPanel').classList.add('open');
+    document.getElementById('listenMsg').textContent = '✓ "' + txt + '" — vérifiez et confirmez.';
+    stopMic();
+  };
+  recog.onerror = recog.onend = () => stopMic();
+  recog.start(); listening = true;
+  document.getElementById('micBtn').classList.add('on');
+  document.getElementById('listenBar').classList.add('show');
+}
+function stopMic() {
+  try { recog && recog.stop(); } catch (e) {}
+  listening = false;
+  document.getElementById('micBtn').classList.remove('on');
+}
+
+loadFromSheet();
+</script>
+</body>
+</html>
