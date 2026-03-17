@@ -72,7 +72,41 @@
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.65} }
   /* BOUTON FLOTTANT MOBILE */
   .fab { display: none; position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; background: #2d5a2d; color: white; border: none; border-radius: 50%; font-size: 28px; cursor: pointer; z-index: 50; box-shadow: 0 4px 16px rgba(0,0,0,0.2); align-items: center; justify-content: center; }
-  @media (max-width: 768px) { .fab { display: flex; } .board { grid-template-columns: repeat(2,1fr); } .kbd-hint, .shortcut-hint { display: none; } }
+  @media (max-width: 768px) {
+    body { padding: 6px; }
+
+    .toolbar { padding: 7px 10px; gap: 6px; flex-wrap: wrap; }
+    .tool-title { font-size: 12px; order: 0; flex: 1; }
+    .status { font-size: 9px; padding: 2px 7px; order: 1; }
+    .search-wrap { order: 2; flex: 1; min-width: 120px; }
+    .search-inp { width: 100% !important; font-size: 11px; padding: 5px 24px 5px 8px; }
+    .btn { font-size: 11px; padding: 5px 10px; }
+    .btn-mic { font-size: 11px; padding: 5px 10px; }
+    .btn-logout { font-size: 10px; padding: 4px 8px; }
+    .shortcut-hint { display: none; }
+
+    .board { grid-template-columns: repeat(2,1fr); gap: 7px; padding: 7px; min-height: unset; }
+
+    .col { padding: 7px; gap: 5px; min-height: 180px; }
+    .col-header { padding-bottom: 5px; margin-bottom: 1px; gap: 5px; }
+    .col-title { font-size: 9px; letter-spacing: .03em; }
+    .col-count { font-size: 9px; padding: 1px 5px; }
+    .col-dot { width: 7px; height: 7px; }
+
+    .card { padding: 6px 7px; gap: 5px; border-radius: 7px; }
+    .picto { font-size: 15px; }
+    .card-subject { font-size: 11px; line-height: 1.25; white-space: normal; }
+    .card-check { width: 14px; height: 14px; flex-shrink: 0; }
+    .card-check.checked::after { font-size: 8px; }
+    .drag-handle { display: none; }
+    .card-btns { display: flex; }
+    .card-btn { font-size: 13px; opacity: 1; color: #ccc; }
+
+    .done-toggle { font-size: 9px; }
+    .recur-badge { font-size: 9px; }
+
+    .fab { display: flex; }
+  }
 
   /* RÉCURRENCE */
   .recur-badge { font-size: 10px; color: #185fa5; background: #e6f1fb; border-radius: 4px; padding: 1px 5px; margin-top: 3px; display: inline-block; }
@@ -178,7 +212,7 @@
 
   /* MODAL IA */
 
-  @media (max-width: 768px) { .board { grid-template-columns: repeat(2,1fr); } }
+
 </style>
 </head>
 <body>
