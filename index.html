@@ -8,6 +8,7 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f4f3f0; min-height: 100vh; padding: 12px; color: #1a1a1a; }
 
+  /* LOGIN */
   #login-screen { display: flex; align-items: center; justify-content: center; min-height: 90vh; }
   .login-card { background: white; border-radius: 16px; border: 1px solid #e0ddd8; padding: 40px 36px; width: 100%; max-width: 380px; text-align: center; }
   .login-logo { font-size: 36px; margin-bottom: 12px; }
@@ -16,12 +17,12 @@
   .login-input { width: 100%; padding: 11px 16px; border: 1px solid #d0cdc8; border-radius: 10px; font-size: 15px; color: #1a1a1a; background: #fafaf8; outline: none; text-align: center; letter-spacing: .1em; margin-bottom: 10px; transition: border-color .15s; }
   .login-input:focus { border-color: #888; background: white; }
   .login-remember { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 12px; font-size: 12px; color: #888; cursor: pointer; }
-  .login-remember input { cursor: pointer; }
-  .login-btn { width: 100%; padding: 11px; background: #1a1a1a; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; transition: background .15s; }
+  .login-btn { width: 100%; padding: 11px; background: #1a1a1a; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; }
   .login-btn:hover { background: #333; }
   .login-error { display: none; margin-top: 10px; font-size: 12px; color: #a32d2d; background: #fcebeb; border-radius: 8px; padding: 8px 12px; }
   .login-error.show { display: block; }
 
+  /* APP */
   #app { display: none; }
   .app-wrap { max-width: 1400px; margin: 0 auto; background: white; border-radius: 14px; overflow: hidden; border: 1px solid #e0ddd8; }
 
@@ -54,6 +55,7 @@
   .btn-ok { padding: 7px 16px; background: #1a1a1a; color: white; border: none; border-radius: 8px; font-size: 12px; cursor: pointer; font-weight: 500; }
   .btn-ok:hover { background: #333; }
 
+  /* BOARD */
   .board { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; padding: 12px; min-height: 500px; background: #f4f3f0; }
   .col { border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 7px; min-height: 460px; }
   .col-0 { background: #fcebeb; border: 1.5px solid #f09595; }
@@ -67,26 +69,67 @@
   .col-title { font-size: 11px; font-weight: 600; color: #333; flex: 1; letter-spacing: .05em; }
   .col-count { font-size: 10px; color: #666; background: rgba(255,255,255,0.7); border-radius: 99px; padding: 1px 7px; }
 
-  .card { background: white; border-radius: 9px; padding: 9px 11px; border: 1px solid rgba(0,0,0,0.08); cursor: grab; display: flex; align-items: center; gap: 9px; transition: transform .15s, box-shadow .15s; user-select: none; }
+  /* CARDS */
+  .card { background: white; border-radius: 9px; padding: 8px 10px; border: 1px solid rgba(0,0,0,0.08); cursor: grab; display: flex; align-items: center; gap: 8px; transition: transform .15s, box-shadow .15s; user-select: none; }
   .card:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(0,0,0,0.07); }
   .card.dragging { opacity: .4; cursor: grabbing; }
-  .picto { font-size: 20px; line-height: 1; flex-shrink: 0; }
+  .card.done-card { background: #f8f8f6; border-color: rgba(0,0,0,0.05); opacity: .75; cursor: default; }
+  .card.done-card:hover { transform: none; box-shadow: none; }
+
+  .card-check { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid #ccc; background: white; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+  .card-check:hover { border-color: #3b6d11; background: #eaf3de; }
+  .card-check.checked { border-color: #3b6d11; background: #3b6d11; }
+  .card-check.checked::after { content: '✓'; color: white; font-size: 9px; font-weight: 700; }
+
+  .picto { font-size: 19px; line-height: 1; flex-shrink: 0; }
+  .card.done-card .picto { filter: grayscale(1); opacity: .5; }
+
   .card-text { flex: 1; min-width: 0; }
   .card-subject { font-size: 12px; font-weight: 600; color: #1a1a1a; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-action { font-size: 11px; color: #777; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .card-del { opacity: 0; font-size: 13px; cursor: pointer; color: #aaa; background: none; border: none; padding: 0 2px; transition: opacity .15s; flex-shrink: 0; }
-  .card:hover .card-del { opacity: 1; }
-  .card-del:hover { color: #e24b4a; }
+  .card.done-card .card-subject { text-decoration: line-through; color: #aaa; font-weight: 400; }
+  .card-action-lbl { font-size: 11px; color: #777; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  .drop-hint { border: 1.5px dashed rgba(0,0,0,0.15); border-radius: 9px; height: 36px; display: none; align-items: center; justify-content: center; font-size: 10px; color: #aaa; }
+  .card-btns { display: none; gap: 4px; flex-shrink: 0; }
+  .card:hover .card-btns { display: flex; }
+  .card-btn { font-size: 12px; cursor: pointer; color: #aaa; background: none; border: none; padding: 1px 3px; transition: color .15s; line-height: 1; }
+  .card-btn:hover { color: #555; }
+  .card-btn.del:hover { color: #e24b4a; }
+
+  /* ZONE RÉALISÉ */
+  .done-zone { margin-top: auto; }
+  .done-toggle { display: flex; align-items: center; gap: 5px; font-size: 10px; color: #888; cursor: pointer; padding: 4px 2px; border-top: 1px dashed rgba(0,0,0,0.12); margin-top: 6px; user-select: none; }
+  .done-toggle:hover { color: #555; }
+  .done-toggle .arrow { font-size: 8px; transition: transform .2s; }
+  .done-toggle.open .arrow { transform: rotate(90deg); }
+  .done-list { display: none; flex-direction: column; gap: 5px; margin-top: 5px; }
+  .done-list.open { display: flex; }
+
+  /* DROP */
+  .drop-hint { border: 1.5px dashed rgba(0,0,0,0.15); border-radius: 9px; height: 34px; display: none; align-items: center; justify-content: center; font-size: 10px; color: #aaa; }
   .drop-hint.show { display: flex; }
   .drop-hint.over { border-color: rgba(0,0,0,0.3); background: rgba(255,255,255,0.4); }
+
+  /* MODAL ÉDITION */
+  .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 100; align-items: center; justify-content: center; }
+  .modal-bg.open { display: flex; }
+  .modal { background: white; border-radius: 14px; padding: 24px; width: 100%; max-width: 420px; border: 1px solid #e0ddd8; }
+  .modal-title { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 16px; }
+  .modal-field { margin-bottom: 12px; }
+  .modal-label { font-size: 11px; color: #888; margin-bottom: 4px; display: block; }
+  .modal-inp { width: 100%; padding: 8px 12px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 13px; color: #1a1a1a; outline: none; background: #fafaf8; }
+  .modal-inp:focus { border-color: #888; background: white; }
+  .modal-sel { width: 100%; padding: 8px 12px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 13px; color: #1a1a1a; background: #fafaf8; cursor: pointer; }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+  .modal-cancel { padding: 8px 16px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 13px; cursor: pointer; background: white; color: #666; }
+  .modal-save { padding: 8px 20px; background: #1a1a1a; color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; }
+  .modal-save:hover { background: #333; }
 
   @media (max-width: 768px) { .board { grid-template-columns: repeat(2,1fr); } }
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">📋</div>
@@ -103,6 +146,7 @@
   </div>
 </div>
 
+<!-- APP -->
 <div id="app">
 <div class="app-wrap">
   <div class="toolbar">
@@ -150,6 +194,34 @@
 </div>
 </div>
 
+<!-- MODAL ÉDITION -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-title">Modifier la tâche</div>
+    <div class="modal-field">
+      <label class="modal-label">Action</label>
+      <input class="modal-inp" id="mAction" placeholder="Mail, Appel, Valider…" />
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Sujet / détail</label>
+      <input class="modal-inp" id="mSubject" placeholder="Sujet ou détail" />
+    </div>
+    <div class="modal-field">
+      <label class="modal-label">Colonne</label>
+      <select class="modal-sel" id="mCol">
+        <option value="0">🔴 Urgent</option>
+        <option value="1">🟠 Demain</option>
+        <option value="2">🟢 Avant vendredi</option>
+        <option value="3">🔵 Background</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Annuler</button>
+      <button class="modal-save" onclick="saveModal()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbziY3XtF8JEbYTFjDMkQgTFz43vRhZIgr44zaMxwaDa1h2L5ySzlljea29kU19sbo0K/exec';
 const STORAGE_KEY = 'maq_token';
@@ -173,29 +245,29 @@ function getPicto(action) {
   return '📋';
 }
 
-let tasks=[], dragId=null, nextId=1, TOKEN='';
+let tasks=[], dragId=null, nextId=1, TOKEN='', editId=null;
 
 function setStatus(txt,type) {
   const s=document.getElementById('status');
   s.textContent=txt; s.className='status s-'+type;
 }
 
+// LOGIN
 async function doLogin() {
   const val=document.getElementById('tokenInput').value.trim();
   if (!val) return;
   TOKEN=val;
   await loadFromSheet(true);
 }
-
 function doLogout() {
-  localStorage.removeItem(STORAGE_KEY);
-  TOKEN='';
+  localStorage.removeItem(STORAGE_KEY); TOKEN='';
   document.getElementById('app').style.display='none';
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('tokenInput').value='';
   document.getElementById('loginError').classList.remove('show');
 }
 
+// DATA
 async function loadFromSheet(isLogin=false) {
   setStatus('Connexion…','load');
   try {
@@ -207,20 +279,16 @@ async function loadFromSheet(isLogin=false) {
       return;
     }
     document.getElementById('loginError').classList.remove('show');
-    if (document.getElementById('rememberMe').checked)
-      localStorage.setItem(STORAGE_KEY, TOKEN);
+    if (document.getElementById('rememberMe').checked) localStorage.setItem(STORAGE_KEY,TOKEN);
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='block';
-    tasks=d.tasks.map(t=>({...t,col:parseInt(t.col),id:parseInt(t.id)}));
+    tasks=d.tasks.map(t=>({...t,col:parseInt(t.col),id:parseInt(t.id),done:t.done==='true'||t.done===true}));
     nextId=tasks.length?Math.max(...tasks.map(t=>t.id))+1:1;
     setStatus('Google Sheet ✓','ok');
     render();
   } catch(e) {
     setStatus('Hors ligne','err');
-    if (isLogin) {
-      document.getElementById('loginError').textContent='Connexion impossible. Vérifiez votre réseau.';
-      document.getElementById('loginError').classList.add('show');
-    }
+    if (isLogin) { document.getElementById('loginError').textContent='Connexion impossible.'; document.getElementById('loginError').classList.add('show'); }
   }
 }
 
@@ -233,62 +301,156 @@ async function saveToSheet() {
   } catch(e) { setStatus('Erreur sauvegarde','err'); }
 }
 
+// RENDER
 function makeCard(t) {
   const el=document.createElement('div');
-  el.className='card'; el.id='card-'+t.id; el.draggable=true;
-  el.ondragstart=()=>{dragId=t.id;el.classList.add('dragging');};
-  el.ondragend=()=>el.classList.remove('dragging');
-  el.innerHTML=`<span class="picto">${getPicto(t.action)}</span>
-    <div class="card-text">
-      <div class="card-subject">${t.subject||t.action||''}</div>
-      ${t.action&&t.subject?`<div class="card-action">${t.action}</div>`:''}
-    </div>
-    <button class="card-del" onclick="deleteTask(${t.id})">✕</button>`;
+  el.className='card'+(t.done?' done-card':'');
+  el.id='card-'+t.id;
+  if (!t.done) {
+    el.draggable=true;
+    el.ondragstart=()=>{dragId=t.id;el.classList.add('dragging');};
+    el.ondragend=()=>el.classList.remove('dragging');
+  }
+
+  const check=document.createElement('div');
+  check.className='card-check'+(t.done?' checked':'');
+  check.onclick=(e)=>{e.stopPropagation();toggleDone(t.id);};
+
+  const picto=document.createElement('span');
+  picto.className='picto';
+  picto.textContent=getPicto(t.action);
+
+  const txt=document.createElement('div');
+  txt.className='card-text';
+  txt.innerHTML=`<div class="card-subject">${t.subject||t.action||''}</div>${t.action&&t.subject?`<div class="card-action-lbl">${t.action}</div>`:''}`;
+
+  const btns=document.createElement('div');
+  btns.className='card-btns';
+
+  if (!t.done) {
+    const editBtn=document.createElement('button');
+    editBtn.className='card-btn';
+    editBtn.title='Modifier';
+    editBtn.textContent='✎';
+    editBtn.onclick=(e)=>{e.stopPropagation();openModal(t.id);};
+    btns.appendChild(editBtn);
+  }
+
+  const delBtn=document.createElement('button');
+  delBtn.className='card-btn del';
+  delBtn.title='Supprimer';
+  delBtn.textContent='✕';
+  delBtn.onclick=(e)=>{e.stopPropagation();deleteTask(t.id);};
+  btns.appendChild(delBtn);
+
+  el.appendChild(check);
+  el.appendChild(picto);
+  el.appendChild(txt);
+  el.appendChild(btns);
   return el;
 }
 
 function render() {
   [0,1,2,3].forEach(ci=>{
     const col=document.getElementById('col-'+ci);
-    col.querySelectorAll('.card,.drop-hint').forEach(e=>e.remove());
-    tasks.filter(t=>t.col===ci).forEach(t=>col.appendChild(makeCard(t)));
-    document.getElementById('cnt-'+ci).textContent=tasks.filter(t=>t.col===ci).length;
+    col.querySelectorAll('.card,.drop-hint,.done-zone').forEach(e=>e.remove());
+
+    const active=tasks.filter(t=>t.col===ci&&!t.done);
+    const done=tasks.filter(t=>t.col===ci&&t.done);
+
+    active.forEach(t=>col.appendChild(makeCard(t)));
+    document.getElementById('cnt-'+ci).textContent=active.length;
+
+    // Drop hint
     const dh=document.createElement('div');
     dh.className='drop-hint'; dh.textContent='Déposer ici'; col.appendChild(dh);
+
+    // Zone réalisé
+    if (done.length>0) {
+      const zone=document.createElement('div');
+      zone.className='done-zone';
+
+      const toggle=document.createElement('div');
+      toggle.className='done-toggle';
+      toggle.innerHTML=`<span class="arrow">▶</span> Réalisé (${done.length})`;
+      toggle.onclick=()=>{
+        toggle.classList.toggle('open');
+        list.classList.toggle('open');
+      };
+
+      const list=document.createElement('div');
+      list.className='done-list';
+      done.forEach(t=>list.appendChild(makeCard(t)));
+
+      zone.appendChild(toggle);
+      zone.appendChild(list);
+      col.appendChild(zone);
+    }
   });
 }
 
+// ACTIONS
+function toggleDone(id) {
+  const t=tasks.find(t=>t.id===id);
+  if (t) { t.done=!t.done; saveToSheet(); render(); }
+}
+function deleteTask(id) { tasks=tasks.filter(t=>t.id!==id); saveToSheet(); render(); }
+
+function toggleInput() {
+  const p=document.getElementById('inputPanel');
+  p.classList.toggle('open');
+  if (p.classList.contains('open')) document.getElementById('iAction').focus();
+}
+function addTask() {
+  const action=document.getElementById('iAction').value.trim();
+  const subject=document.getElementById('iSubject').value.trim();
+  const col=parseInt(document.getElementById('iCol').value);
+  if (!action&&!subject) return;
+  tasks.push({id:nextId++,col,action,person:'',subject,done:false});
+  document.getElementById('iAction').value='';
+  document.getElementById('iSubject').value='';
+  saveToSheet(); render();
+}
+document.addEventListener('keydown',e=>{
+  if (e.key==='Enter'&&document.getElementById('inputPanel').classList.contains('open')) addTask();
+  if (e.key==='Escape') closeModal();
+});
+
+// MODAL
+function openModal(id) {
+  const t=tasks.find(t=>t.id===id);
+  if (!t) return;
+  editId=id;
+  document.getElementById('mAction').value=t.action||'';
+  document.getElementById('mSubject').value=t.subject||'';
+  document.getElementById('mCol').value=t.col;
+  document.getElementById('modalBg').classList.add('open');
+  document.getElementById('mSubject').focus();
+}
+function closeModal() {
+  document.getElementById('modalBg').classList.remove('open');
+  editId=null;
+}
+function saveModal() {
+  const t=tasks.find(t=>t.id===editId);
+  if (!t) return;
+  t.action=document.getElementById('mAction').value.trim();
+  t.subject=document.getElementById('mSubject').value.trim();
+  t.col=parseInt(document.getElementById('mCol').value);
+  closeModal();
+  saveToSheet(); render();
+}
+
+// DRAG & DROP
 function dragOver(e,ci){e.preventDefault();document.getElementById('col-'+ci).querySelector('.drop-hint')?.classList.add('show','over');}
 function dragLeave(){document.querySelectorAll('.drop-hint').forEach(d=>d.classList.remove('show','over'));}
 function drop(e,ci){
   e.preventDefault();
-  if(dragId!==null){const t=tasks.find(t=>t.id===dragId);if(t){t.col=ci;saveToSheet();render();}dragId=null;}
+  if (dragId!==null){const t=tasks.find(t=>t.id===dragId);if(t){t.col=ci;saveToSheet();render();}dragId=null;}
   dragLeave();
 }
 
-function deleteTask(id){tasks=tasks.filter(t=>t.id!==id);saveToSheet();render();}
-
-function toggleInput(){
-  const p=document.getElementById('inputPanel');
-  p.classList.toggle('open');
-  if(p.classList.contains('open'))document.getElementById('iAction').focus();
-}
-
-function addTask(){
-  const action=document.getElementById('iAction').value.trim();
-  const subject=document.getElementById('iSubject').value.trim();
-  const col=parseInt(document.getElementById('iCol').value);
-  if(!action&&!subject)return;
-  tasks.push({id:nextId++,col,action,person:'',subject});
-  document.getElementById('iAction').value='';
-  document.getElementById('iSubject').value='';
-  saveToSheet();render();
-}
-
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&document.getElementById('inputPanel').classList.contains('open'))addTask();
-});
-
+// MIC
 let recog=null,listening=false;
 function toggleMic(){listening?stopMic():startMic();}
 function startMic(){
@@ -297,11 +459,11 @@ function startMic(){
   recog=new SR();recog.lang='fr-FR';recog.interimResults=false;
   recog.onresult=e=>{
     const txt=e.results[0][0].transcript;
-    const t=txt.toLowerCase();
+    const tl=txt.toLowerCase();
     let action='',subject='';
-    const mM=t.match(/mail\s+[àa]\s+([\w\s\-]+?)(?:\s+(?:re|sujet|pour)\s*:?\s*(.+))?$/i);
+    const mM=tl.match(/mail\s+[àa]\s+([\w\s\-]+?)(?:\s+(?:re|sujet|pour)\s*:?\s*(.+))?$/i);
     if(mM){action='Mail';subject=(mM[2]||mM[1]||'').trim();}
-    else{const mC=t.match(/appel(?:er)?\s+([\w\s\-]+?)(?:\s+(?:re|pour)\s*:?\s*(.+))?$/i);if(mC){action='Appel';subject=(mC[2]||mC[1]||'').trim();}else{subject=txt;}}
+    else{const mC=tl.match(/appel(?:er)?\s+([\w\s\-]+?)(?:\s+(?:re|pour)\s*:?\s*(.+))?$/i);if(mC){action='Appel';subject=(mC[2]||mC[1]||'').trim();}else{subject=txt;}}
     document.getElementById('iAction').value=action;
     document.getElementById('iSubject').value=subject||txt;
     document.getElementById('inputPanel').classList.add('open');
@@ -315,7 +477,7 @@ function startMic(){
 }
 function stopMic(){try{recog&&recog.stop();}catch(e){}listening=false;document.getElementById('micBtn').classList.remove('on');}
 
-// Init
+// INIT
 const saved=localStorage.getItem(STORAGE_KEY);
 if(saved){TOKEN=saved;loadFromSheet(true);}
 else{document.getElementById('login-screen').style.display='flex';}
