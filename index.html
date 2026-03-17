@@ -41,6 +41,27 @@
   .btn-mic.on { background: #a32d2d; animation: blink 1s infinite; }
   .btn-logout { background: transparent; border-color: #d0cdc8; color: #999; font-size: 11px; padding: 5px 10px; }
   .shortcut-hint { font-size: 10px; color: #bbb; padding: 0 4px; }
+
+  /* RECHERCHE */
+  .search-wrap { position: relative; }
+  .search-inp { padding: 6px 28px 6px 10px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 12px; background: white; color: #1a1a1a; outline: none; width: 160px; transition: border-color .15s, width .2s; }
+  .search-inp:focus { border-color: #888; width: 220px; }
+  .search-inp::placeholder { color: #bbb; }
+  .search-clear { position: absolute; right: 7px; top: 50%; transform: translateY(-50%); font-size: 11px; color: #bbb; cursor: pointer; display: none; background: none; border: none; line-height: 1; }
+  .search-clear.show { display: block; }
+  .card.hidden { display: none; }
+  .card.highlight .card-subject { background: #fef9c3; border-radius: 3px; }
+
+  /* CONFIRMATION SUPPRESSION */
+  .confirm-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.25); z-index: 300; align-items: center; justify-content: center; }
+  .confirm-bg.open { display: flex; }
+  .confirm-box { background: white; border-radius: 12px; padding: 20px 22px; width: 100%; max-width: 320px; border: 1px solid #e0ddd8; text-align: center; }
+  .confirm-msg { font-size: 13px; color: #1a1a1a; margin-bottom: 6px; font-weight: 500; }
+  .confirm-sub { font-size: 11px; color: #888; margin-bottom: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .confirm-btns { display: flex; gap: 8px; justify-content: center; }
+  .confirm-cancel { padding: 7px 18px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 13px; cursor: pointer; background: white; color: #666; }
+  .confirm-ok { padding: 7px 18px; background: #e24b4a; color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; }
+  .confirm-ok:hover { background: #a32d2d; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.65} }
 
   .listen-bar { display: none; align-items: center; gap: 8px; padding: 6px 16px; background: #fcebeb; border-bottom: 1px solid #f09595; font-size: 11px; color: #a32d2d; }
@@ -163,7 +184,11 @@
   <div class="toolbar">
     <span class="tool-title">Mes tâches <span class="task-count" id="taskCount"></span></span>
     <span class="status s-load" id="status">Connexion…</span>
-    <span class="shortcut-hint">N = nouvelle tâche · M = micro · Échap = fermer</span>
+    <div class="search-wrap">
+      <input class="search-inp" id="searchInp" placeholder="🔍 Rechercher…" oninput="filterCards(this.value)" />
+      <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+    </div>
+    <span class="shortcut-hint">N = nouvelle · M = micro · F = recherche · Échap = fermer</span>
     <button class="btn" onclick="toggleInput()" title="Nouvelle tâche (N)">+ Ajouter</button>
     <button class="btn btn-mic" id="micBtn" onclick="toggleMic()" title="Dicter (M)">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
@@ -210,6 +235,18 @@
 <div style="max-width:1400px;margin:8px auto 0;padding:6px 16px;background:rgba(255,255,255,0.55);border-radius:10px;border:1px solid #e8e5e0;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:center;">
   <span style="font-size:9px;color:#bbb;font-weight:600;letter-spacing:.06em;flex-shrink:0;">PICTOS —</span>
   <span style="font-size:11px;color:#999;">✉️ mail &nbsp;↩️ répondre &nbsp;📞 appel &nbsp;👥 réunion &nbsp;💻 travailler sur &nbsp;✅ valider &nbsp;🔎 vérifier &nbsp;📊 rapport &nbsp;📄 rédiger &nbsp;💳 payer &nbsp;✏️ publier &nbsp;🔍 veille &nbsp;🔁 relancer &nbsp;🗂️ classer &nbsp;🛒 commander &nbsp;🎓 formation &nbsp;🚨 urgent &nbsp;📋 autre</span>
+</div>
+
+<!-- CONFIRMATION SUPPRESSION -->
+<div class="confirm-bg" id="confirmBg" onclick="if(event.target===this)cancelDelete()">
+  <div class="confirm-box">
+    <div class="confirm-msg">Supprimer cette tâche ?</div>
+    <div class="confirm-sub" id="confirmSub">—</div>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" onclick="cancelDelete()">Annuler</button>
+      <button class="confirm-ok" onclick="confirmDelete()">Supprimer</button>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL ÉDITION -->
@@ -474,7 +511,25 @@ function colDrop(e,ci) {
 
 // ACTIONS
 function toggleDone(id){const t=tasks.find(t=>t.id===id);if(t){t.done=!t.done;saveToSheet();render();}}
-function deleteTask(id){tasks=tasks.filter(t=>t.id!==id);saveToSheet();render();}
+let pendingDeleteId = null;
+function deleteTask(id) {
+  const t = tasks.find(t=>t.id===id);
+  if (!t) return;
+  pendingDeleteId = id;
+  document.getElementById('confirmSub').textContent = t.subject || t.action || 'Tâche sans titre';
+  document.getElementById('confirmBg').classList.add('open');
+}
+function confirmDelete() {
+  if (pendingDeleteId===null) return;
+  tasks = tasks.filter(t=>t.id!==pendingDeleteId);
+  pendingDeleteId = null;
+  document.getElementById('confirmBg').classList.remove('open');
+  saveToSheet(); render();
+}
+function cancelDelete() {
+  pendingDeleteId = null;
+  document.getElementById('confirmBg').classList.remove('open');
+}
 
 function toggleInput() {
   const p=document.getElementById('inputPanel');
@@ -546,17 +601,41 @@ function startMic(){
 function stopMic(){try{recog&&recog.stop();}catch(e){}listening=false;document.getElementById('micBtn').classList.remove('on');}
 
 
+// RECHERCHE
+function filterCards(q) {
+  const term = q.trim().toLowerCase();
+  document.getElementById('searchClear').classList.toggle('show', term.length > 0);
+  document.querySelectorAll('.card').forEach(el => {
+    if (!term) { el.classList.remove('hidden'); return; }
+    el.classList.toggle('hidden', !el.textContent.toLowerCase().includes(term));
+  });
+}
+function clearSearch() {
+  document.getElementById('searchInp').value = '';
+  document.getElementById('searchClear').classList.remove('show');
+  document.querySelectorAll('.card').forEach(el => el.classList.remove('hidden'));
+  document.getElementById('searchInp').focus();
+}
+
 // RACCOURCIS CLAVIER
 document.addEventListener('keydown',e=>{
   const tag=document.activeElement.tagName;
   const isInput=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT';
-  if (e.key==='Escape') { closeModal(); if(document.getElementById('inputPanel').classList.contains('open')) toggleInput(); stopMic(); }
-  if (!isInput && !document.getElementById('modalBg').classList.contains('open')) {
+  if (e.key==='Escape') {
+    cancelDelete();
+    closeModal();
+    if(document.getElementById('inputPanel').classList.contains('open')) toggleInput();
+    if(document.getElementById('searchInp').value) clearSearch();
+    stopMic();
+  }
+  if (!isInput && !document.getElementById('modalBg').classList.contains('open') && !document.getElementById('confirmBg').classList.contains('open')) {
     if (e.key==='n'||e.key==='N') { e.preventDefault(); toggleInput(); }
     if (e.key==='m'||e.key==='M') { e.preventDefault(); toggleMic(); }
+    if (e.key==='f'||e.key==='F') { e.preventDefault(); document.getElementById('searchInp').focus(); }
   }
   if (e.key==='Enter' && document.getElementById('inputPanel').classList.contains('open') && !document.getElementById('modalBg').classList.contains('open')) addTask();
   if (e.key==='Enter' && document.getElementById('modalBg').classList.contains('open') && document.activeElement===document.getElementById('mSubject')) saveModal();
+  if (e.key==='Enter' && document.getElementById('confirmBg').classList.contains('open')) confirmDelete();
 });
 
 // INIT
