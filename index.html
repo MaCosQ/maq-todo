@@ -311,7 +311,8 @@
     <span id="listenMsg">Parlez… ex : "Mail à Sophie contrat renouvellement"</span>
   </div>
   <div class="input-panel" id="inputPanel">
-    <input class="inp inp-action" id="iAction" placeholder="Action — Mail, Appel, Valider…" />
+    <button class="picto-current" id="iPictoBtn" onclick="toggleAddPictoSelector()" title="Choisir un picto" style="flex-shrink:0;">📋</button>
+    <input class="inp inp-action" id="iAction" placeholder="Action — Mail, Appel, Valider…" oninput="autoPickAddPicto(this.value)" />
     <input class="inp inp-subject" id="iSubject" placeholder="Sujet / détail" />
     <select class="sel-col" id="iCol">
       <option value="0">🔴 Urgent</option>
@@ -321,6 +322,7 @@
     </select>
     <button class="btn-ok" onclick="addTask()">Ajouter</button>
   </div>
+  <div class="picto-selector" id="addPictoSelector" style="margin:0 16px 8px;display:none;"></div>
   <div class="board" id="board">
     <div class="col col-0" id="col-0" ondragover="colDragOver(event,0)" ondrop="colDrop(event,0)" ondragleave="colDragLeave()">
       <div class="col-header"><div class="col-dot d0"></div><span class="col-title">URGENT</span><span class="col-count" id="cnt-0">0</span></div>
@@ -462,7 +464,7 @@ function getPicto(action) {
   return '📋';
 }
 
-let tasks=[], dragId=null, dragOverId=null, dragPos='bottom', nextId=1, TOKEN='', editId=null;
+let tasks=[], dragId=null, dragOverId=null, dragPos='bottom', nextId=1, TOKEN='', editId=null, manualPicto=null, manualAddPicto=null;
 
 function setStatus(txt,type) {
   const s=document.getElementById('status');
@@ -700,19 +702,63 @@ function cancelDelete() {
   document.getElementById('confirmBg').classList.remove('open');
 }
 
+// SÉLECTEUR PICTO DANS FORMULAIRE AJOUT
+function initAddPictoSelector() {
+  const sel = document.getElementById('addPictoSelector');
+  if (sel.children.length > 0) return;
+  const pictos = ['✉️','💬','📞','👥','⚙️','✅','🔎','📊','🖼️','📄','💳','✏️','🔍','🔁','🗂️','🛒','🎓','🚨','🖥️','🚀','🔧','📋'];
+  const lbl = document.createElement('span');
+  lbl.className='picto-label'; lbl.style.width='100%'; lbl.textContent='Choisir un picto :';
+  sel.appendChild(lbl);
+  pictos.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className='picto-opt'; btn.textContent=p;
+    btn.onclick = () => { manualAddPicto=p; document.getElementById('iPictoBtn').textContent=p; document.querySelectorAll('#addPictoSelector .picto-opt').forEach(b=>b.classList.toggle('selected',b.textContent===p)); sel.style.display='none'; };
+    sel.appendChild(btn);
+  });
+}
+function toggleAddPictoSelector() {
+  initAddPictoSelector();
+  const sel=document.getElementById('addPictoSelector');
+  const show = sel.style.display==='none' || sel.style.display==='';
+  sel.style.display = show ? 'flex' : 'none';
+  if (show) { sel.style.flexWrap='wrap'; sel.style.gap='6px'; sel.style.padding='10px'; }
+}
+function autoPickAddPicto(val) {
+  if (manualAddPicto) return;
+  const detected=getPicto(val);
+  document.getElementById('iPictoBtn').textContent=detected;
+  const sel=document.getElementById('addPictoSelector');
+  if (detected==='📋' && val.trim().length>2) {
+    initAddPictoSelector(); sel.style.display='flex'; sel.style.flexWrap='wrap'; sel.style.gap='6px'; sel.style.padding='10px';
+  } else { sel.style.display='none'; }
+}
+
 function toggleInput() {
   const p=document.getElementById('inputPanel');
   p.classList.toggle('open');
-  if (p.classList.contains('open')) document.getElementById('iAction').focus();
+  if (p.classList.contains('open')) {
+    document.getElementById('iAction').focus();
+  } else {
+    manualAddPicto=null;
+    document.getElementById('iPictoBtn').textContent='📋';
+    document.getElementById('addPictoSelector').style.display='none';
+  }
 }
 function addTask() {
   const action=document.getElementById('iAction').value.trim();
   const subject=document.getElementById('iSubject').value.trim();
   const col=parseInt(document.getElementById('iCol').value);
   if (!action&&!subject) return;
-  tasks.unshift({id:nextId++,col,action,person:'',subject,done:false});
+  const picto=manualAddPicto||getPicto(action);
+  manualAddPicto=null;
+  document.getElementById('iPictoBtn').textContent='📋';
+  document.getElementById('addPictoSelector').style.display='none';
+  const order=tasks.filter(t=>t.col===col&&!t.done).length;
+  tasks.push({id:nextId++,col,action,person:'',subject,done:false,order,picto});
   document.getElementById('iAction').value='';
   document.getElementById('iSubject').value='';
+  document.getElementById('inputPanel').classList.remove('open');
   saveToSheet(); render();
 }
 
@@ -736,7 +782,8 @@ function openModal(id) {
 }
 function closeModal() {
   document.getElementById('modalBg').classList.remove('open');
-  stopAiMic();
+  manualPicto=null;
+  document.getElementById('pictoSelector').classList.remove('show');
   editId=null;
 }
 function saveModal() {
@@ -745,6 +792,9 @@ function saveModal() {
   t.action=document.getElementById('mAction').value.trim();
   t.subject=document.getElementById('mSubject').value.trim();
   t.col=parseInt(document.getElementById('mCol').value);
+  t.picto=manualPicto||getPicto(t.action);
+  t.recur=document.getElementById('mRecur').checked;
+  t.recurFreq=document.getElementById('mRecurFreq').value;
   closeModal(); saveToSheet(); render();
 }
 
