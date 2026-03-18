@@ -502,6 +502,7 @@ async function loadFromSheet(isLogin=false) {
       return;
     }
     document.getElementById('loginError').classList.remove('show');
+   if (d.user) { const t='ToDo — '+d.user; document.getElementById('appTitle').textContent=t; document.title=t; }
     if (document.getElementById('rememberMe').checked) localStorage.setItem(STORAGE_KEY,TOKEN);
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='block';
