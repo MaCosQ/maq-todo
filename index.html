@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="To Do">
 <meta name="theme-color" content="#ffffff">
 <link rel="apple-touch-icon" href="assets/icon.png">
-<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22To+Do+%E2%80%94+QUERCY%22%2C%22short_name%22%3A%22To+Do%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%22%232d5a2d%22%7D">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22To+Do+%E2%80%94+QUERCY%22%2C%22short_name%22%3A%22To+Do%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23ffffff%22%2C%22theme_color%22%3A%222d5a2d%22%7D">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>To Do — QUERCY</title>
 <style>
@@ -49,7 +49,7 @@
   .btn-logout { background: transparent; border-color: #d0cdc8; color: #999; font-size: 11px; padding: 5px 10px; }
   .shortcut-hint { font-size: 10px; color: #bbb; padding: 0 4px; }
 
-  /* RECHERCHE */
+  /* RECHERCHE DESKTOP */
   .search-wrap { position: relative; }
   .search-inp { padding: 6px 28px 6px 10px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 12px; background: white; color: #1a1a1a; outline: none; width: 160px; transition: border-color .15s, width .2s; }
   .search-inp:focus { border-color: #888; width: 220px; }
@@ -58,6 +58,12 @@
   .search-clear.show { display: block; }
   .card.hidden { display: none; }
   .card.highlight .card-subject { background: #fef9c3; border-radius: 3px; }
+
+  /* RECHERCHE MOBILE */
+  .btn-search-mobile { display: none; }
+  .mobile-search-bar { display: none; padding: 6px 8px; background: #f8f7f4; border-bottom: 1px solid #e0ddd8; }
+  .mobile-search-bar.open { display: flex; gap: 8px; align-items: center; }
+  .mobile-search-inp { flex: 1; padding: 7px 12px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 13px; outline: none; background: white; color: #1a1a1a; }
 
   /* CONFIRMATION SUPPRESSION */
   .confirm-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.25); z-index: 300; align-items: center; justify-content: center; }
@@ -70,12 +76,13 @@
   .confirm-ok { padding: 7px 18px; background: #e24b4a; color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; }
   .confirm-ok:hover { background: #a32d2d; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.65} }
+
   /* BOUTON FLOTTANT MOBILE */
   .fab { display: none; position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; background: #2d5a2d; color: white; border: none; border-radius: 50%; font-size: 28px; cursor: pointer; z-index: 50; box-shadow: 0 4px 16px rgba(0,0,0,0.2); align-items: center; justify-content: center; }
+
   @media screen and (max-width: 768px) {
     body { padding: 4px !important; background: #fff !important; }
 
-    /* TOOLBAR compacte 1 ligne */
     .app-wrap { border-radius: 8px !important; overflow: hidden !important; }
     .toolbar { padding: 6px 8px !important; gap: 5px !important; flex-wrap: nowrap !important; }
     .tool-title { font-size: 11px !important; white-space: nowrap !important; overflow: hidden !important; flex-shrink: 1 !important; min-width: 0 !important; max-width: 80px !important; }
@@ -87,8 +94,13 @@
     .btn-mic { font-size: 11px !important; padding: 5px 8px !important; }
     .btn-logout { font-size: 10px !important; padding: 4px 6px !important; }
 
+    /* RECHERCHE MOBILE */
+    .btn-search-mobile { display: flex !important; font-size: 15px !important; padding: 5px 8px !important; flex-shrink: 0 !important; }
+    .mobile-search-bar.open { display: flex !important; }
+    .mobile-search-inp { flex: 1; padding: 7px 12px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 13px; outline: none; background: white; color: #1a1a1a; }
+
     /* BOARD 2x2 */
-    .board { 
+    .board {
       display: grid !important;
       grid-template-columns: calc(50% - 3px) calc(50% - 3px) !important;
       gap: 5px !important;
@@ -99,14 +111,13 @@
       overflow: hidden !important;
     }
 
-    /* COLONNES */
-    .col { 
-      padding: 6px !important; 
-      gap: 4px !important; 
-      min-height: 120px !important; 
-      min-width: 0 !important; 
+    .col {
+      padding: 6px !important;
+      gap: 4px !important;
+      min-height: 120px !important;
+      min-width: 0 !important;
       max-width: 100% !important;
-      overflow: hidden !important; 
+      overflow: hidden !important;
       width: 100% !important;
     }
     .col-header { padding-bottom: 4px !important; margin-bottom: 1px !important; gap: 4px !important; }
@@ -114,11 +125,10 @@
     .col-count { font-size: 9px !important; padding: 1px 4px !important; }
     .col-dot { width: 6px !important; height: 6px !important; }
 
-    /* CARTES */
-    .card { 
-      padding: 5px 5px !important; 
-      gap: 4px !important; 
-      border-radius: 6px !important; 
+    .card {
+      padding: 5px 5px !important;
+      gap: 4px !important;
+      border-radius: 6px !important;
       min-width: 0 !important;
       max-width: 100% !important;
       overflow: hidden !important;
@@ -128,25 +138,21 @@
     .card-subject { font-size: 10px !important; line-height: 1.25 !important; white-space: normal !important; word-break: break-word !important; overflow: hidden !important; }
     .card-check { width: 13px !important; height: 13px !important; flex-shrink: 0 !important; }
     .card-check.checked::after { font-size: 7px !important; }
+    /* FIX : bonne classe pour la poignée */
     .card-drag-handle { display: none !important; }
     .card-btns { flex-shrink: 0 !important; }
     .card-btn { font-size: 11px !important; color: #ccc !important; padding: 0 !important; }
     .recur-badge { font-size: 8px !important; }
 
-    /* ZONE RÉALISÉ */
     .done-toggle { font-size: 9px !important; padding: 3px 2px !important; }
     .done-zone { margin-top: 4px !important; }
 
-    /* LÉGENDE masquée */
     .pictos-legend { display: none !important; }
 
-    /* FAB */
     .fab { display: flex !important; width: 50px !important; height: 50px !important; font-size: 26px !important; bottom: 20px !important; right: 16px !important; }
 
-    /* LOGIN */
     .login-card { padding: 28px 20px !important; }
   }
-
 
   /* SÉLECTEUR PICTO MANUEL */
   .picto-selector { display: none; flex-wrap: wrap; gap: 6px; margin-top: 8px; padding: 10px; background: #f8f7f4; border-radius: 10px; border: 1px solid #e0ddd8; }
@@ -158,22 +164,21 @@
   .picto-current { font-size: 22px; cursor: pointer; padding: 3px 6px; border-radius: 7px; border: 1px solid #d0cdc8; background: white; transition: background .15s; }
   .picto-current:hover { background: #f0ede8; }
   .picto-row { display: flex; align-items: center; gap: 8px; }
+
   /* RÉCURRENCE */
   .recur-badge { font-size: 10px; color: #185fa5; background: #e6f1fb; border-radius: 4px; padding: 1px 5px; margin-top: 3px; display: inline-block; }
-
-  /* MODAL RÉCURRENCE dans édition */
   .recur-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
   .recur-check { cursor: pointer; }
   .recur-sel { padding: 5px 8px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 12px; background: white; color: #1a1a1a; cursor: pointer; }
 
-  /* SERVICE WORKER offline banner */
+  /* OFFLINE / LISTEN BARS */
   .offline-bar { display: none; align-items: center; gap: 8px; padding: 5px 16px; background: #faeeda; border-bottom: 1px solid #fac775; font-size: 11px; color: #854f0b; }
   .offline-bar.show { display: flex; }
-
   .listen-bar { display: none; align-items: center; gap: 8px; padding: 6px 16px; background: #fcebeb; border-bottom: 1px solid #f09595; font-size: 11px; color: #a32d2d; }
   .listen-bar.show { display: flex; }
   .dot-pulse { width: 7px; height: 7px; border-radius: 50%; background: #e24b4a; animation: blink .9s infinite; flex-shrink: 0; }
 
+  /* FORMULAIRE AJOUT */
   .input-panel { display: none; align-items: center; gap: 8px; padding: 9px 16px; border-bottom: 1px solid #e0ddd8; flex-wrap: wrap; background: #fafaf8; }
   .input-panel.open { display: flex; }
   .inp { padding: 7px 12px; border: 1px solid #d0cdc8; border-radius: 8px; font-size: 12px; background: white; color: #1a1a1a; outline: none; transition: border-color .15s; }
@@ -206,6 +211,7 @@
   .card.drag-over-bottom { border-bottom: 2px solid #1a1a1a; }
   .card.done-card { background: #f8f8f6; border-color: rgba(0,0,0,0.05); opacity: .7; cursor: default; }
   .card.done-card:hover { transform: none; box-shadow: none; }
+  .card.selected { border: 2px solid #2d5a2d !important; box-shadow: 0 0 0 3px rgba(45,90,45,0.15) !important; }
 
   .card-check { width: 17px; height: 17px; border-radius: 50%; border: 1.5px solid #ccc; background: white; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .15s; }
   .card-check:hover { border-color: #3b6d11; background: #eaf3de; }
@@ -260,14 +266,12 @@
   .modal-save { padding: 8px 20px; background: #1a1a1a; color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; }
   .modal-save:hover { background: #333; }
 
-  /* MODAL IA */
-
-.card.selected { border: 2px solid #2d5a2d !important; box-shadow: 0 0 0 3px rgba(45,90,45,0.15) !important; }
-.mobile-action-bar { display: none; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: white; border-radius: 14px; border: 1px solid #e0ddd8; box-shadow: 0 4px 24px rgba(0,0,0,0.18); padding: 10px 14px; gap: 8px; z-index: 60; align-items: center; white-space: nowrap; }
-.mobile-action-bar.show { display: flex; }
-.mab-btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; border: none; }
-.mab-edit { background: #1a1a1a; color: white; }
-.mab-del { background: #fcebeb; color: #a32d2d; }
+  /* MOBILE ACTION BAR */
+  .mobile-action-bar { display: none; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: white; border-radius: 14px; border: 1px solid #e0ddd8; box-shadow: 0 4px 24px rgba(0,0,0,0.18); padding: 10px 14px; gap: 8px; z-index: 60; align-items: center; white-space: nowrap; }
+  .mobile-action-bar.show { display: flex; }
+  .mab-btn { padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; border: none; }
+  .mab-edit { background: #1a1a1a; color: white; }
+  .mab-del { background: #fcebeb; color: #a32d2d; }
 </style>
 </head>
 <body>
@@ -293,13 +297,18 @@
 <div id="app">
 <div class="app-wrap">
   <div class="toolbar">
-    <img src="assets/icon.png" alt="Quercy & Associés" style="height:34px;object-fit:contain;margin-right:4px;" /><span class="tool-title" style="margin-left:8px;"><span id="appTitle">Mes tâches</span> <span class="task-count" id="taskCount"></span></span>
+    <img src="assets/icon.png" alt="Quercy & Associés" style="height:34px;object-fit:contain;margin-right:4px;" />
+    <span class="tool-title" style="margin-left:8px;">
+      <span id="appTitle">Mes tâches</span>
+      <span class="task-count" id="taskCount"></span>
+    </span>
     <span class="status s-load" id="status">Connexion…</span>
     <div class="search-wrap">
       <input class="search-inp" id="searchInp" placeholder="🔍 Rechercher…" oninput="filterCards(this.value)" />
       <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
     </div>
     <span class="shortcut-hint">N = nouvelle · M = micro · F = recherche · Échap = fermer</span>
+    <button class="btn btn-search-mobile" onclick="toggleMobileSearch()" title="Rechercher">🔍</button>
     <button class="btn" onclick="toggleInput()" title="Nouvelle tâche (N)">+ Ajouter</button>
     <button class="btn btn-mic" id="micBtn" onclick="toggleMic()" title="Dicter (M)">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2">
@@ -310,6 +319,13 @@
     </button>
     <button class="btn btn-logout" onclick="doLogout()">Déconnexion</button>
   </div>
+
+  <!-- BARRE RECHERCHE MOBILE -->
+  <div class="mobile-search-bar" id="mobileSearchBar">
+    <input class="mobile-search-inp" id="mobileSearchInp" placeholder="🔍 Rechercher…" oninput="filterCards(this.value)" />
+    <button onclick="clearMobileSearch()" style="background:none;border:none;font-size:14px;color:#bbb;cursor:pointer;padding:4px;">✕</button>
+  </div>
+
   <div class="offline-bar" id="offlineBar">⚡ Mode hors ligne — modifications sauvegardées localement</div>
   <div class="listen-bar" id="listenBar">
     <div class="dot-pulse"></div>
@@ -328,6 +344,7 @@
     <button class="btn-ok" onclick="addTask()">Ajouter</button>
   </div>
   <div class="picto-selector" id="addPictoSelector" style="margin:0 16px 8px;display:none;"></div>
+
   <div class="board" id="board">
     <div class="col col-0" id="col-0" ondragover="colDragOver(event,0)" ondrop="colDrop(event,0)" ondragleave="colDragLeave()">
       <div class="col-header"><div class="col-dot d0"></div><span class="col-title">URGENT</span><span class="col-count" id="cnt-0">0</span></div>
@@ -437,7 +454,6 @@
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbziY3XtF8JEbYTFjDMkQgTFz43vRhZIgr44zaMxwaDa1h2L5ySzlljea29kU19sbo0K/exec';
 const STORAGE_KEY = 'maq_token';
-const AI_URL = 'https://api.anthropic.com/v1/messages';
 
 const ACTION_PICTOS = [
   [['mail','email','envoyer','écrire'],                          '✉️'],
@@ -470,6 +486,7 @@ function getPicto(action) {
 }
 
 let tasks=[], dragId=null, dragOverId=null, dragPos='bottom', nextId=1, TOKEN='', editId=null, manualPicto=null, manualAddPicto=null;
+let isDirty = false; // flag auto-save
 
 function setStatus(txt,type) {
   const s=document.getElementById('status');
@@ -507,7 +524,7 @@ async function loadFromSheet(isLogin=false) {
       return;
     }
     document.getElementById('loginError').classList.remove('show');
-   if (d.user) { const t='ToDo — '+d.user; document.getElementById('appTitle').textContent=t; document.title=t; }
+    if (d.user) { const t='ToDo — '+d.user; document.getElementById('appTitle').textContent=t; document.title=t; }
     if (document.getElementById('rememberMe').checked) localStorage.setItem(STORAGE_KEY,TOKEN);
     document.getElementById('login-screen').style.display='none';
     document.getElementById('app').style.display='block';
@@ -520,14 +537,22 @@ async function loadFromSheet(isLogin=false) {
     if (isLogin){document.getElementById('loginError').textContent='Connexion impossible.';document.getElementById('loginError').classList.add('show');}
   }
 }
+
 async function saveToSheet() {
+  isDirty = false;
   setStatus('Sauvegarde…','load');
   try {
     await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({token:TOKEN,action:'save_all',tasks})});
     setStatus('Sauvegardé ✓','ok');
     setTimeout(()=>setStatus('Google Sheet ✓','ok'),2000);
-  } catch(e){setStatus('Erreur sauvegarde','err');}
+  } catch(e){
+    setStatus('Erreur sauvegarde','err');
+    isDirty = true; // re-tenter au prochain cycle
+  }
 }
+
+// AUTO-SAVE toutes les 5 minutes si modifications en attente
+setInterval(() => { if (isDirty && TOKEN) saveToSheet(); }, 5 * 60 * 1000);
 
 // RENDER
 function makeCard(t) {
@@ -567,7 +592,6 @@ function makeCard(t) {
     };
   }
 
-  // Handle
   const handle=document.createElement('span');
   handle.className='card-drag-handle';
   handle.textContent='⠿';
@@ -598,25 +622,24 @@ function makeCard(t) {
   db.onclick=(e)=>{e.stopPropagation();deleteTask(t.id);};
   btns.appendChild(db);
 
- // MOBILE : 1 clic = sélectionner, 2 clics = valider
-let tapCount = 0, tapTimer = null;
-el.addEventListener('touchend', (e) => {
-  if (t.done) return;
-  tapCount++;
-  if (tapCount === 1) {
-    tapTimer = setTimeout(() => {
+  // MOBILE : 1 tap = sélectionner, 2 taps = valider
+  let tapCount = 0, tapTimer = null;
+  el.addEventListener('touchend', (e) => {
+    if (t.done) return;
+    tapCount++;
+    if (tapCount === 1) {
+      tapTimer = setTimeout(() => {
+        tapCount = 0;
+        selectCard(t.id, el);
+      }, 300);
+    } else {
+      clearTimeout(tapTimer);
       tapCount = 0;
-      selectCard(t.id, el);
-    }, 300);
-  } else {
-    clearTimeout(tapTimer);
-    tapCount = 0;
-    toggleDone(t.id);
-  }
-});
-// Desktop : double-clic = éditer (inchangé)
-el.ondblclick = () => { if(!t.done) openModal(t.id); };
- 
+      toggleDone(t.id);
+    }
+  });
+  // Desktop : double-clic = éditer
+  el.ondblclick = () => { if(!t.done) openModal(t.id); };
 
   el.appendChild(handle);
   el.appendChild(check);
@@ -664,7 +687,7 @@ function render() {
   updateCount();
 }
 
-// RÉORGANISATION dans la colonne
+// RÉORGANISATION
 function reorderTask(fromId, toId, pos, toCol) {
   const fromIdx=tasks.findIndex(t=>t.id===fromId);
   const toIdx=tasks.findIndex(t=>t.id===toId);
@@ -673,10 +696,10 @@ function reorderTask(fromId, toId, pos, toCol) {
   moved.col=toCol;
   const newToIdx=tasks.findIndex(t=>t.id===toId);
   tasks.splice(pos==='top'?newToIdx:newToIdx+1,0,moved);
-  saveToSheet(); render();
+  isDirty = true; saveToSheet(); render();
 }
 
-// DRAG ENTRE COLONNES (drop sur fond de colonne)
+// DRAG ENTRE COLONNES
 function colDragOver(e,ci) {
   e.preventDefault();
   document.getElementById('col-'+ci).querySelector('.drop-hint')?.classList.add('show','over');
@@ -688,7 +711,7 @@ function colDrop(e,ci) {
   e.preventDefault();
   if (dragId!==null) {
     const t=tasks.find(t=>t.id===dragId);
-    if (t&&t.col!==ci) { t.col=ci; saveToSheet(); render(); }
+    if (t&&t.col!==ci) { t.col=ci; isDirty=true; saveToSheet(); render(); }
     dragId=null;
   }
   colDragLeave();
@@ -699,12 +722,12 @@ function toggleDone(id){
   const t=tasks.find(t=>t.id===id);
   if(!t) return;
   t.done=!t.done;
-  // Si tâche récurrente cochée → créer une nouvelle occurrence
   if(t.done && t.recur){
     tasks.push({id:nextId++,col:t.col,action:t.action,person:t.person||'',subject:t.subject,done:false,order:0,recur:true,recurFreq:t.recurFreq});
   }
-  saveToSheet();render();
+  isDirty=true; saveToSheet(); render();
 }
+
 let pendingDeleteId = null;
 function deleteTask(id) {
   const t = tasks.find(t=>t.id===id);
@@ -718,14 +741,14 @@ function confirmDelete() {
   tasks = tasks.filter(t=>t.id!==pendingDeleteId);
   pendingDeleteId = null;
   document.getElementById('confirmBg').classList.remove('open');
-  saveToSheet(); render();
+  isDirty=true; saveToSheet(); render();
 }
 function cancelDelete() {
   pendingDeleteId = null;
   document.getElementById('confirmBg').classList.remove('open');
 }
 
-// SÉLECTEUR PICTO DANS FORMULAIRE AJOUT
+// SÉLECTEUR PICTO — FORMULAIRE AJOUT
 function initAddPictoSelector() {
   const sel = document.getElementById('addPictoSelector');
   if (sel.children.length > 0) return;
@@ -782,15 +805,13 @@ function addTask() {
   document.getElementById('iAction').value='';
   document.getElementById('iSubject').value='';
   document.getElementById('inputPanel').classList.remove('open');
-  saveToSheet(); render();
+  isDirty=true; saveToSheet(); render();
 }
 
-// SÉLECTEUR PICTO MODALE ÉDITION
+// SÉLECTEUR PICTO — MODALE ÉDITION
 function togglePictoSelector() {
-  const sel = document.getElementById('pictoSelector');
-  sel.classList.toggle('show');
+  document.getElementById('pictoSelector').classList.toggle('show');
 }
-
 function selectPicto(p) {
   manualPicto = p;
   document.getElementById('mPictoBtn').textContent = p;
@@ -799,9 +820,7 @@ function selectPicto(p) {
   });
   document.getElementById('pictoSelector').classList.remove('show');
 }
-
 function autoPickPicto(val) {
-  // Si picto choisi manuellement, ne pas écraser
   if (manualPicto) return;
   const detected = getPicto(val);
   document.getElementById('mPictoBtn').textContent = detected;
@@ -820,7 +839,7 @@ function openModal(id) {
   document.getElementById('mAction').value=t.action||'';
   document.getElementById('mSubject').value=t.subject||'';
   document.getElementById('mCol').value=t.col;
-  manualPicto = null; // Pas de verrouillage à l'ouverture — auto-détection active
+  manualPicto = null;
   document.getElementById('mPictoBtn').textContent = t.picto || getPicto(t.action);
   document.getElementById('pictoSelector').classList.remove('show');
   document.querySelectorAll('#pictoSelector .picto-opt').forEach(b => b.classList.remove('selected'));
@@ -845,11 +864,11 @@ function saveModal() {
   t.picto=manualPicto||getPicto(t.action);
   t.recur=document.getElementById('mRecur').checked;
   t.recurFreq=document.getElementById('mRecurFreq').value;
-  closeModal(); saveToSheet(); render();
+  closeModal(); isDirty=true; saveToSheet(); render();
 }
 
- let selectedCardId = null;
-
+// SÉLECTION MOBILE
+let selectedCardId = null;
 function selectCard(id, el) {
   document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
   if (selectedCardId === id) {
@@ -861,7 +880,6 @@ function selectCard(id, el) {
   el.classList.add('selected');
   showMobileActionBar(id);
 }
-
 function showMobileActionBar(id) {
   const t = tasks.find(t => t.id === id);
   if (!t) return;
@@ -872,14 +890,12 @@ function showMobileActionBar(id) {
     bar.className = 'mobile-action-bar';
     bar.innerHTML = `
       <button class="mab-btn mab-edit" onclick="openModal(selectedCardId)">✎ Éditer</button>
-      <div class="mab-sep"></div>
       <button class="mab-btn mab-del" onclick="deleteTask(selectedCardId);hideMobileActionBar()">✕ Supprimer</button>
     `;
     document.body.appendChild(bar);
   }
   bar.classList.add('show');
 }
-
 function hideMobileActionBar() {
   selectedCardId = null;
   document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
@@ -887,7 +903,24 @@ function hideMobileActionBar() {
   if (bar) bar.classList.remove('show');
 }
 
-// MIC GLOBAL (barre du haut → ouvre modal avec dictée)
+// RECHERCHE MOBILE
+function toggleMobileSearch() {
+  const bar = document.getElementById('mobileSearchBar');
+  bar.classList.toggle('open');
+  if (bar.classList.contains('open')) {
+    document.getElementById('mobileSearchInp').focus();
+  } else {
+    document.getElementById('mobileSearchInp').value='';
+    filterCards('');
+  }
+}
+function clearMobileSearch() {
+  document.getElementById('mobileSearchInp').value='';
+  filterCards('');
+  document.getElementById('mobileSearchBar').classList.remove('open');
+}
+
+// MIC
 let recog=null, listening=false;
 function toggleMic(){listening?stopMic():startMic();}
 function startMic(){
@@ -915,8 +948,7 @@ function startMic(){
 }
 function stopMic(){try{recog&&recog.stop();}catch(e){}listening=false;document.getElementById('micBtn').classList.remove('on');}
 
-
-// RECHERCHE
+// RECHERCHE DESKTOP
 function filterCards(q) {
   const term = q.trim().toLowerCase();
   document.getElementById('searchClear').classList.toggle('show', term.length > 0);
@@ -941,6 +973,7 @@ document.addEventListener('keydown',e=>{
     closeModal();
     if(document.getElementById('inputPanel').classList.contains('open')) toggleInput();
     if(document.getElementById('searchInp').value) clearSearch();
+    if(document.getElementById('mobileSearchBar').classList.contains('open')) clearMobileSearch();
     stopMic();
   }
   if (!isInput && !document.getElementById('modalBg').classList.contains('open') && !document.getElementById('confirmBg').classList.contains('open')) {
@@ -953,8 +986,7 @@ document.addEventListener('keydown',e=>{
   if (e.key==='Enter' && document.getElementById('confirmBg').classList.contains('open')) confirmDelete();
 });
 
-
-// SERVICE WORKER — mode hors ligne
+// SERVICE WORKER
 if('serviceWorker' in navigator){
   const swCode = `
 self.addEventListener('install', e => self.skipWaiting());
@@ -971,7 +1003,7 @@ self.addEventListener('fetch', e => {
   navigator.serviceWorker.register(swUrl).catch(()=>{});
 }
 
-window.addEventListener('online', ()=>{ document.getElementById('offlineBar').classList.remove('show'); saveToSheet(); });
+window.addEventListener('online', ()=>{ document.getElementById('offlineBar').classList.remove('show'); if(isDirty) saveToSheet(); });
 window.addEventListener('offline', ()=>{ document.getElementById('offlineBar').classList.add('show'); });
 if(!navigator.onLine) document.getElementById('offlineBar').classList.add('show');
 
